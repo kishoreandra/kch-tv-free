@@ -85,15 +85,22 @@ export const snapshotBreadthNow = createServerFn({ method: "POST" })
         const price = n(r.price);
         if (price == null) continue;
         total++;
-        const p1d = n(r.perf_1d), rv = n(r.rel_vol);
+        const p1d = n(r.perf_1d),
+          rv = n(r.rel_vol);
         if (p1d != null && rv != null) {
           if (p1d >= 4 && rv >= 2) up_4pct++;
           else if (p1d <= -4 && rv >= 2) down_4pct++;
         }
         const p1m = n(r.perf_1m);
-        if (p1m != null) { if (p1m >= 25) up_25pct_1m++; else if (p1m <= -25) down_25pct_1m++; }
+        if (p1m != null) {
+          if (p1m >= 25) up_25pct_1m++;
+          else if (p1m <= -25) down_25pct_1m++;
+        }
         const p3m = n(r.perf_3m);
-        if (p3m != null) { if (p3m >= 25) up_25pct_1q++; else if (p3m <= -25) down_25pct_1q++; }
+        if (p3m != null) {
+          if (p3m >= 25) up_25pct_1q++;
+          else if (p3m <= -25) down_25pct_1q++;
+        }
         const e50 = n(r.ema50);
         if (e50 != null && price > e50) above_ema50++;
         const e200 = n(r.ema200);
@@ -112,7 +119,22 @@ export const snapshotBreadthNow = createServerFn({ method: "POST" })
       const { hasNseSession } = await import("@/lib/breadth/bhavcopy.server");
       if (!(await hasNseSession(day))) return { ok: true, skipped: true, day, total: 0 };
       const { error: upErr } = await supabaseAdmin.from("breadth_daily").upsert(
-        { day, total, up_4pct, down_4pct, up_25pct_1m, down_25pct_1m, up_25pct_1q, down_25pct_1q, above_ema50, above_ema200, new_highs_52w, new_lows_52w, t2108, ts: new Date().toISOString() },
+        {
+          day,
+          total,
+          up_4pct,
+          down_4pct,
+          up_25pct_1m,
+          down_25pct_1m,
+          up_25pct_1q,
+          down_25pct_1q,
+          above_ema50,
+          above_ema200,
+          new_highs_52w,
+          new_lows_52w,
+          t2108,
+          ts: new Date().toISOString(),
+        },
         { onConflict: "day" },
       );
       if (upErr) throw upErr;

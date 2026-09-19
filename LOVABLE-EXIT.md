@@ -4,20 +4,20 @@ Living document. Update as phases complete. Started 19-Sep-2026.
 
 ## Status — start here
 
-| Phase | State |
-| --- | --- |
-| 1. De-Lovable the **build** | ✅ **DONE & verified** |
+| Phase                                                   | State                  |
+| ------------------------------------------------------- | ---------------------- |
+| 1. De-Lovable the **build**                             | ✅ **DONE & verified** |
 | 2. De-Lovable the **app** (auth broker, hardcoded URLs) | ✅ **DONE & verified** |
-| 3-7. Supabase, data, deploy, schedules, verify | ⬜ not started |
+| 3-7. Supabase, data, deploy, schedules, verify          | ⬜ not started         |
 
 Commits on `main` (this repo has no remote yet):
 
-| SHA | What |
-| --- | --- |
-| `c6166fe` | Baseline: import of `kch-tv@31aca3e`, `.env` untracked |
+| SHA       | What                                                              |
+| --------- | ----------------------------------------------------------------- |
+| `c6166fe` | Baseline: import of `kch-tv@31aca3e`, `.env` untracked            |
 | `7bde4ee` | `build:` Vite config rewritten standalone (byte-identical output) |
-| `207d237` | `chore(deps):` drop bun + Lovable build package |
-| `4b6b7b5` | `docs:` this file + `.github/copilot-instructions.md` |
+| `207d237` | `chore(deps):` drop bun + Lovable build package                   |
+| `4b6b7b5` | `docs:` this file + `.github/copilot-instructions.md`             |
 
 Run `git log --oneline` for the current tip. The last full build verification was green;
 working tree clean.
@@ -39,7 +39,7 @@ the now-unused `@cloudflare/vite-plugin` dependency, and how to reconcile
    $env:Path = "C:\Users\ADMIN\AppData\Roaming\fnm\node-versions\v22.23.2\installation;$env:Path"
    ```
 3. Nothing to reinstall — `node_modules` is already present.
-4. Then just say: *"Read LOVABLE-EXIT.md and continue with the pending list."*
+4. Then just say: _"Read LOVABLE-EXIT.md and continue with the pending list."_
 
 ## PENDING — consolidated
 
@@ -106,10 +106,10 @@ and deploy it on permanently free infrastructure. Not "re-host while still Lovab
 
 ## Repo layout
 
-| Path | Role |
-| --- | --- |
-| `d:\kch-tv` | **OLD / production. Do not modify.** Origin `git@github.com:kishoreandra/kch-tv.git` |
-| `d:\kch-tv-free` | **This repo.** Fresh history, baseline `c6166fe` |
+| Path             | Role                                                                                 |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| `d:\kch-tv`      | **OLD / production. Do not modify.** Origin `git@github.com:kishoreandra/kch-tv.git` |
+| `d:\kch-tv-free` | **This repo.** Fresh history, baseline `c6166fe`                                     |
 
 `upstream` in this repo points at `d:/kch-tv` (**local path, fetch-only** — the push URL
 is `DISABLED-read-only`). Fetch refspecs pull in both its local branches and every
@@ -135,11 +135,11 @@ normal auth, then `git fetch upstream` here.
 
 ## Environment (verified)
 
-| Tool | Version | Note |
-| --- | --- | --- |
+| Tool | Version              | Note                                                                      |
+| ---- | -------------------- | ------------------------------------------------------------------------- |
 | Node | **v22.23.2** via fnm | Global Node is v20.10.0 at `C:\Program Files\nodejs` — **left untouched** |
-| npm | 10.9.8 | **`bun` is NOT installed on this machine** |
-| git | 2.35.1 | |
+| npm  | 10.9.8               | **`bun` is NOT installed on this machine**                                |
+| git  | 2.35.1               |                                                                           |
 
 Node was activated with:
 
@@ -175,13 +175,13 @@ migration commit is a reviewable delta against it.
 
 ## Phase 0 — decisions
 
-| Decision | Choice |
-| --- | --- |
-| Working copy | `d:\kch-tv-free` |
-| History | Fresh, single baseline commit |
-| Old repo | Kept as fetch-only `upstream` |
-| New GitHub repo | **Create only after the build passes locally** |
-| Node strategy | fnm + repo-local `.node-version`; global Node untouched |
+| Decision        | Choice                                                  |
+| --------------- | ------------------------------------------------------- |
+| Working copy    | `d:\kch-tv-free`                                        |
+| History         | Fresh, single baseline commit                           |
+| Old repo        | Kept as fetch-only `upstream`                           |
+| New GitHub repo | **Create only after the build passes locally**          |
+| Node strategy   | fnm + repo-local `.node-version`; global Node untouched |
 
 ### Still open
 
@@ -193,6 +193,7 @@ migration commit is a reviewable delta against it.
 ## Phase 1 — de-Lovable the build ✅ DONE & VERIFIED
 
 Done:
+
 - Deleted `bun.lock` (120 `pkg.dev` private-registry lines, 0 npmjs — unusable off-platform)
 - Deleted `package-lock.json` (stale: declared `^1.7.0` while `package.json` pins `2.13.1`)
 - Deleted `bunfig.toml` (bun-only config; bun is not installed)
@@ -205,16 +206,16 @@ Done:
 
 Three builds, compared by extracting every `.output/` line (name + size + gzip size):
 
-| Build | Config | Result |
-| --- | --- | --- |
-| `build-baseline.log` | original Lovable config | 321 output lines, exit 0 |
-| `build-step1.log` | new config, Lovable pkg still installed | **zero differences** |
-| `build-step2.log` | new config, Lovable pkg removed | **zero differences** |
+| Build                | Config                                  | Result                   |
+| -------------------- | --------------------------------------- | ------------------------ |
+| `build-baseline.log` | original Lovable config                 | 321 output lines, exit 0 |
+| `build-step1.log`    | new config, Lovable pkg still installed | **zero differences**     |
+| `build-step2.log`    | new config, Lovable pkg removed         | **zero differences**     |
 
 `Compare-Object` returned empty for both comparisons — the emitted artifacts are
 identical (Vite/Rollup filenames are content-hashed, so equal names ⇒ equal content).
 
-`npm install` after removal: *"added 6 packages, removed 12 packages"*.
+`npm install` after removal: _"added 6 packages, removed 12 packages"_.
 `node_modules/@lovable.dev/` now contains **only `cloud-auth-js`** — the Phase 2 target.
 
 ### What the replacement `vite.config.ts` reproduces
@@ -247,12 +248,12 @@ dependency of the Lovable package (`css.transformer: "lightningcss"` requires it
 `package.json` uses caret ranges, so this fresh install resolved **newer** versions than
 Lovable built against (its private-registry lockfile pinned exact versions):
 
-| Package | Declared | Installed |
-| --- | --- | --- |
-| `@tanstack/router-plugin` | `^1.167.28` | 1.168.40 |
-| `@tanstack/react-router` | `^1.168.25` | 1.170.38 |
-| `@tanstack/react-start` | `^1.167.50` | 1.168.56 |
-| `vite` | `^7.3.1` | 7.3.6 |
+| Package                   | Declared    | Installed |
+| ------------------------- | ----------- | --------- |
+| `@tanstack/router-plugin` | `^1.167.28` | 1.168.40  |
+| `@tanstack/react-router`  | `^1.168.25` | 1.170.38  |
+| `@tanstack/react-start`   | `^1.167.50` | 1.168.56  |
+| `vite`                    | `^7.3.1`    | 7.3.6     |
 
 Consequence: `src/routeTree.gen.ts` is regenerated on every build. The baseline
 regeneration was verified as **pure import reordering** — sorted line sets identical
@@ -261,7 +262,7 @@ artifact, **not** a config artifact: it happened on the baseline build before
 `vite.config.ts` was touched.
 
 Expect `routeTree.gen.ts` to show as modified after any build; it is generated output.
-Only worry if the change is *semantic*, not ordering.
+Only worry if the change is _semantic_, not ordering.
 
 ### Known leftover, not yet addressed
 
@@ -299,10 +300,10 @@ correct per-endpoint guard table, one-scheduler warning).
 
 ### Cron endpoints: guard reference
 
-| Guard | Endpoints |
-| --- | --- |
-| `x-cron-secret` only | `refresh-snapshot`, `refresh-vol-maxes`, `snapshot-breadth`, `evaluate-alerts`, `deliver-reminders` |
-| `apikey` (publishable key) only | `refresh-price-bands` |
-| either header | `ingest-daily`, `ingest-bhavcopy`, `ingest-index-close`, `ingest-deals`, `cleanup-band-changes`, `backfill-prices`, `backfill-bhavcopy`, `backfill-index-close` |
+| Guard                           | Endpoints                                                                                                                                                       |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `x-cron-secret` only            | `refresh-snapshot`, `refresh-vol-maxes`, `snapshot-breadth`, `evaluate-alerts`, `deliver-reminders`                                                             |
+| `apikey` (publishable key) only | `refresh-price-bands`                                                                                                                                           |
+| either header                   | `ingest-daily`, `ingest-bhavcopy`, `ingest-index-close`, `ingest-deals`, `cleanup-band-changes`, `backfill-prices`, `backfill-bhavcopy`, `backfill-index-close` |
 
 An external scheduler calling `refresh-price-bands` with `x-cron-secret` gets a **401**.

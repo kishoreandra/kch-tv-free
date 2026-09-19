@@ -26,7 +26,6 @@ export const Route = createFileRoute("/api/public/cron/refresh-snapshot")({
           });
         }
 
-
         let body: unknown = {};
         try {
           body = await request.json();

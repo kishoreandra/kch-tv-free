@@ -40,7 +40,9 @@ export interface MoverRow {
 
 export const getBreadthHistorySA = createServerFn({ method: "GET" })
   .middleware([requireApprovedAuth])
-  .inputValidator((d: unknown) => z.object({ days: z.number().int().min(5).max(1000).optional() }).parse(d ?? {}))
+  .inputValidator((d: unknown) =>
+    z.object({ days: z.number().int().min(5).max(1000).optional() }).parse(d ?? {}),
+  )
   .handler(async ({ data, context }) => {
     const days = data.days ?? 250;
     const since = new Date(Date.now() - days * 86_400_000).toISOString().slice(0, 10);
@@ -71,7 +73,12 @@ export const getBreadthForDates = createServerFn({ method: "POST" })
 export const getTodaysMovers = createServerFn({ method: "GET" })
   .middleware([requireApprovedAuth])
   .inputValidator((d: unknown) =>
-    z.object({ date: z.string().min(10).max(10).optional(), limit: z.number().int().min(1).max(200).optional() }).parse(d ?? {}),
+    z
+      .object({
+        date: z.string().min(10).max(10).optional(),
+        limit: z.number().int().min(1).max(200).optional(),
+      })
+      .parse(d ?? {}),
   )
   .handler(async ({ data, context }) => {
     const { data: rows, error } = await (context.supabase as any).rpc("get_todays_movers", {
@@ -87,7 +94,12 @@ export const getTodaysMovers = createServerFn({ method: "GET" })
 export const runBhavcopyIngestion = createServerFn({ method: "POST" })
   .middleware([requireAdminAuth])
   .inputValidator((d: unknown) =>
-    z.object({ days: z.number().int().min(1).max(10).optional(), date: z.string().min(10).max(10).optional() }).parse(d ?? {}),
+    z
+      .object({
+        days: z.number().int().min(1).max(10).optional(),
+        date: z.string().min(10).max(10).optional(),
+      })
+      .parse(d ?? {}),
   )
   .handler(async ({ data }) => {
     const secret = process.env.CRON_SECRET ?? "";
@@ -100,11 +112,16 @@ export const runBhavcopyIngestion = createServerFn({ method: "POST" })
       body: JSON.stringify({ days: data.days ?? 1, ...(data.date ? { date: data.date } : {}) }),
     });
     const text = await res.text();
-    if (!res.ok) throw new Error(`Bhavcopy ingestion failed (${res.status}): ${text.slice(0, 300)}`);
+    if (!res.ok)
+      throw new Error(`Bhavcopy ingestion failed (${res.status}): ${text.slice(0, 300)}`);
     try {
       const j = JSON.parse(text);
       const done = (j.results ?? []).map((r: any) => r.date).join(", ");
-      return { message: done ? `Ingested ${done}` : `No sessions ingested (${(j.skipped ?? []).length} skipped)` };
+      return {
+        message: done
+          ? `Ingested ${done}`
+          : `No sessions ingested (${(j.skipped ?? []).length} skipped)`,
+      };
     } catch {
       return { message: text.slice(0, 200) };
     }

@@ -2,7 +2,25 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Plus, X, PanelLeftClose, PanelLeft, Maximize2, Minimize2, RotateCcw, Bell, BellRing, Search, Settings2, ExternalLink, HelpCircle, Shield, ChevronUp, ChevronDown, MoreHorizontal } from "lucide-react";
+import {
+  Plus,
+  X,
+  PanelLeftClose,
+  PanelLeft,
+  Maximize2,
+  Minimize2,
+  RotateCcw,
+  Bell,
+  BellRing,
+  Search,
+  Settings2,
+  ExternalLink,
+  HelpCircle,
+  Shield,
+  ChevronUp,
+  ChevronDown,
+  MoreHorizontal,
+} from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
@@ -30,7 +48,6 @@ import { AlertsDialog } from "@/components/AlertsDialog";
 import { AuthButton } from "@/components/AuthButton";
 import { ProfileMenu } from "@/components/ProfileMenu";
 
-
 import { useCloudSync } from "@/hooks/use-cloud-sync";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,14 +59,17 @@ import {
 } from "@/components/ui/select";
 import { NSE_SYMBOLS, type NseSymbol, findSymbol } from "@/data/nse-symbols";
 import { BSE_INDEX_YAHOOS } from "@/data/markets-catalog";
-import {
-  defaultRangeFor,
-  rangesFor,
-  rangeLabel,
-} from "@/lib/timeframes";
+import { defaultRangeFor, rangesFor, rangeLabel } from "@/lib/timeframes";
 import { loadAlerts, saveAlerts, type Alert } from "@/lib/alerts";
 import { requestNotifPermission } from "@/hooks/use-alerts";
-import { isGlobalSymbol, isIndianEquitySymbol, normalizeChartSymbol, nseUrlForSymbol, screenerUrlForSymbol, tradingViewUrlForSymbol } from "@/lib/chart-links";
+import {
+  isGlobalSymbol,
+  isIndianEquitySymbol,
+  normalizeChartSymbol,
+  nseUrlForSymbol,
+  screenerUrlForSymbol,
+  tradingViewUrlForSymbol,
+} from "@/lib/chart-links";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -63,8 +83,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "NSE MultiView — Multi-Timeframe Charts" },
       {
         property: "og:description",
-        content:
-          "Side-by-side timeframe charts for Indian markets. No popups, no signup.",
+        content: "Side-by-side timeframe charts for Indian markets. No popups, no signup.",
       },
     ],
   }),
@@ -87,7 +106,8 @@ function IndexGate() {
   }
   if (!user) {
     return (
-      <div className="relative flex h-screen w-full flex-col items-center justify-center gap-8 overflow-hidden px-4 text-center [height:100dvh]"
+      <div
+        className="relative flex h-screen w-full flex-col items-center justify-center gap-8 overflow-hidden px-4 text-center [height:100dvh]"
         style={{
           background:
             "radial-gradient(ellipse at top, hsl(220 40% 12%) 0%, hsl(222 45% 7%) 45%, hsl(224 50% 4%) 100%)",
@@ -97,12 +117,16 @@ function IndexGate() {
         <div
           aria-hidden
           className="pointer-events-none absolute -top-32 -left-32 h-[420px] w-[420px] rounded-full opacity-40 blur-3xl"
-          style={{ background: "radial-gradient(circle, hsl(265 80% 55% / 0.55), transparent 70%)" }}
+          style={{
+            background: "radial-gradient(circle, hsl(265 80% 55% / 0.55), transparent 70%)",
+          }}
         />
         <div
           aria-hidden
           className="pointer-events-none absolute -bottom-40 -right-32 h-[480px] w-[480px] rounded-full opacity-40 blur-3xl"
-          style={{ background: "radial-gradient(circle, hsl(190 90% 50% / 0.45), transparent 70%)" }}
+          style={{
+            background: "radial-gradient(circle, hsl(190 90% 50% / 0.45), transparent 70%)",
+          }}
         />
         {/* Subtle grid */}
         <div
@@ -149,13 +173,16 @@ function IndexGate() {
         <div className="text-amber-500 text-3xl">⏳</div>
         <h1 className="text-2xl font-semibold">Access pending approval</h1>
         <p className="max-w-md text-sm text-muted-foreground">
-          Your sign-up was received. The admin (keechu7@gmail.com) needs to approve your account before you can use the app.
-          You'll be granted access once approved — please try signing in again later.
+          Your sign-up was received. The admin (keechu7@gmail.com) needs to approve your account
+          before you can use the app. You'll be granted access once approved — please try signing in
+          again later.
         </p>
         <div className="text-xs text-muted-foreground">Signed in as {user.email}</div>
         <button
           className="text-xs underline text-muted-foreground hover:text-foreground"
-          onClick={() => import("@/integrations/supabase/client").then(m => m.supabase.auth.signOut())}
+          onClick={() =>
+            import("@/integrations/supabase/client").then((m) => m.supabase.auth.signOut())
+          }
         >
           Sign out
         </button>
@@ -164,7 +191,6 @@ function IndexGate() {
   }
   return <Index />;
 }
-
 
 const TIMEFRAMES = [
   { label: "5 min", interval: "5" },
@@ -188,7 +214,6 @@ const INDICATORS_KEY = "nse-mv:indicators";
 const CHART_KEY = "nse-mv:chart";
 const SIDEBAR_KEY = "nse-mv:sidebar-open";
 const SIDEBAR_WIDTH_KEY = "nse-mv:sidebar-width";
-
 
 interface Pane {
   interval: string;
@@ -251,7 +276,9 @@ function normalizePanes(raw: unknown): Pane[] {
 function ensureSwitchableDefaultPanes(panes: Pane[]): Pane[] {
   if (panes.length > 1) return panes;
   const byInterval = new Map(panes.map((p) => [p.interval, p]));
-  return ["D", "60", "W"].map((interval) => byInterval.get(interval) ?? ({ interval, range: defaultRangeFor(interval) }));
+  return ["D", "60", "W"].map(
+    (interval) => byInterval.get(interval) ?? { interval, range: defaultRangeFor(interval) },
+  );
 }
 
 function symbolFromUrl(): string | null {
@@ -299,9 +326,29 @@ const BAR_FIELDS: { key: BarField; label: string }[] = [
   { key: "v", label: "Volume" },
   { key: "pv", label: "Price × Volume (Cr)" },
 ];
-const DEFAULT_BAR_FIELDS: Record<BarField, boolean> = { o: true, h: true, l: true, c: true, v: true, pv: true };
+const DEFAULT_BAR_FIELDS: Record<BarField, boolean> = {
+  o: true,
+  h: true,
+  l: true,
+  c: true,
+  v: true,
+  pv: true,
+};
 
-type HoverBar = { time?: number; open: number; high: number; low: number; close: number; volume: number; adr20?: number | null; atr14?: number | null; pct52wHigh?: number | null; pctFromLod?: number | null; pctFromMa?: number | null; maLabel?: string | null };
+type HoverBar = {
+  time?: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+  adr20?: number | null;
+  atr14?: number | null;
+  pct52wHigh?: number | null;
+  pctFromLod?: number | null;
+  pctFromMa?: number | null;
+  maLabel?: string | null;
+};
 
 function formatCr(n: number): string {
   if (!Number.isFinite(n) || n <= 0) return "0";
@@ -324,22 +371,55 @@ function VolumeInfo({
     <div className="hidden items-center gap-1.5 md:flex">
       {bar && (
         <div className={`flex items-center gap-1.5 text-[10px] tabular-nums ${color}`}>
-          {fields.o && <span><span className="text-muted-foreground">O</span>{formatPx(bar.open)}</span>}
-          {fields.h && <span><span className="text-muted-foreground">H</span>{formatPx(bar.high)}</span>}
-          {fields.l && <span><span className="text-muted-foreground">L</span>{formatPx(bar.low)}</span>}
-          {fields.c && <span><span className="text-muted-foreground">C</span>{formatPx(bar.close)}</span>}
+          {fields.o && (
+            <span>
+              <span className="text-muted-foreground">O</span>
+              {formatPx(bar.open)}
+            </span>
+          )}
+          {fields.h && (
+            <span>
+              <span className="text-muted-foreground">H</span>
+              {formatPx(bar.high)}
+            </span>
+          )}
+          {fields.l && (
+            <span>
+              <span className="text-muted-foreground">L</span>
+              {formatPx(bar.low)}
+            </span>
+          )}
+          {fields.c && (
+            <span>
+              <span className="text-muted-foreground">C</span>
+              {formatPx(bar.close)}
+            </span>
+          )}
           {fields.v && bar.volume > 0 && (
-            <span><span className="text-muted-foreground">Vol</span>{formatVol(bar.volume)}</span>
+            <span>
+              <span className="text-muted-foreground">Vol</span>
+              {formatVol(bar.volume)}
+            </span>
           )}
           {fields.pv && bar.volume > 0 && (
-            <span><span className="text-muted-foreground">P×V </span>{formatCr(pv)}<span className="text-muted-foreground">Cr</span></span>
+            <span>
+              <span className="text-muted-foreground">P×V </span>
+              {formatCr(pv)}
+              <span className="text-muted-foreground">Cr</span>
+            </span>
           )}
           {bar.adr20 != null && Number.isFinite(bar.adr20) && (
-            <span className="px-1"><span className="text-muted-foreground">ADR20 </span>{bar.adr20.toFixed(2)}%</span>
+            <span className="px-1">
+              <span className="text-muted-foreground">ADR20 </span>
+              {bar.adr20.toFixed(2)}%
+            </span>
           )}
           {bar.atr14 != null && Number.isFinite(bar.atr14) && (
             <>
-              <span className="px-1"><span className="text-muted-foreground">ATR14 </span>{bar.atr14.toFixed(2)}</span>
+              <span className="px-1">
+                <span className="text-muted-foreground">ATR14 </span>
+                {bar.atr14.toFixed(2)}
+              </span>
               <span className="px-1" title="Close − ATR14 (nearby support)">
                 <span className="text-muted-foreground">−ATR </span>
                 <span className="text-sky-400">{(bar.close - bar.atr14).toFixed(2)}</span>
@@ -348,10 +428,18 @@ function VolumeInfo({
           )}
           {/* % from 52-week high now lives in the toolbar beside the watchlist position. */}
           {bar.pctFromLod != null && Number.isFinite(bar.pctFromLod) && (
-            <span><span className="text-muted-foreground">LoD </span>+{bar.pctFromLod.toFixed(2)}%</span>
+            <span>
+              <span className="text-muted-foreground">LoD </span>+{bar.pctFromLod.toFixed(2)}%
+            </span>
           )}
           {bar.pctFromMa != null && Number.isFinite(bar.pctFromMa) && bar.maLabel && (
-            <span><span className="text-muted-foreground">{bar.maLabel} </span><span className={bar.pctFromMa >= 0 ? "text-emerald-500" : "text-rose-500"}>{bar.pctFromMa >= 0 ? "+" : ""}{bar.pctFromMa.toFixed(2)}%</span></span>
+            <span>
+              <span className="text-muted-foreground">{bar.maLabel} </span>
+              <span className={bar.pctFromMa >= 0 ? "text-emerald-500" : "text-rose-500"}>
+                {bar.pctFromMa >= 0 ? "+" : ""}
+                {bar.pctFromMa.toFixed(2)}%
+              </span>
+            </span>
           )}
         </div>
       )}
@@ -368,7 +456,10 @@ function VolumeInfo({
         <PopoverContent align="end" className="w-44 p-2">
           <div className="text-[11px] font-medium text-muted-foreground px-1 pb-1">Show fields</div>
           {BAR_FIELDS.map((f) => (
-            <label key={f.key} className="flex items-center gap-2 px-1 py-1 text-xs cursor-pointer hover:bg-accent rounded">
+            <label
+              key={f.key}
+              className="flex items-center gap-2 px-1 py-1 text-xs cursor-pointer hover:bg-accent rounded"
+            >
               <Checkbox
                 checked={fields[f.key]}
                 onCheckedChange={(c) => onFieldsChange({ ...fields, [f.key]: c === true })}
@@ -382,7 +473,6 @@ function VolumeInfo({
   );
 }
 
-
 function Index() {
   const { isAdmin } = useAuth();
   const initialUrlSymbol = useRef<string | null>(symbolFromUrl());
@@ -392,7 +482,6 @@ function Index() {
   const [watchlist, setWatchlist] = useState<NseSymbol[]>([]);
   const [lists, setLists] = useState<CustomList[]>([]);
   const [lastListId, setLastListId] = useState<string | null>(null);
-  
 
   // Refs mirroring the latest values, used by the global keydown handler so it
   // can read current state without being torn down/rebuilt on every change.
@@ -410,7 +499,9 @@ function Index() {
     return typeof w === "number" && w >= 220 && w <= 640 ? w : 288;
   });
   useEffect(() => {
-    try { localStorage.setItem(SIDEBAR_WIDTH_KEY, JSON.stringify(sidebarWidth)); } catch {}
+    try {
+      localStorage.setItem(SIDEBAR_WIDTH_KEY, JSON.stringify(sidebarWidth));
+    } catch {}
   }, [sidebarWidth]);
 
   const [focusedPane, setFocusedPane] = useState<number | null>(0);
@@ -446,7 +537,9 @@ function Index() {
     return DEFAULT_BAR_FIELDS;
   });
   useEffect(() => {
-    try { localStorage.setItem("bar-fields", JSON.stringify(barFields)); } catch {}
+    try {
+      localStorage.setItem("bar-fields", JSON.stringify(barFields));
+    } catch {}
   }, [barFields]);
   const [resetTicks, setResetTicks] = useState<number[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -458,20 +551,36 @@ function Index() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
-      const isTyping = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || (target?.isContentEditable ?? false);
+      const isTyping =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        (target?.isContentEditable ?? false);
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
         setPaletteOpen((v) => !v);
       } else if (e.key === "/" && !isTyping) {
         e.preventDefault();
         setPaletteOpen(true);
-      } else if (!isTyping && !e.metaKey && !e.ctrlKey && !e.altKey && (e.key === "\\" || e.key === "b" || e.key === "B")) {
+      } else if (
+        !isTyping &&
+        !e.metaKey &&
+        !e.ctrlKey &&
+        !e.altKey &&
+        (e.key === "\\" || e.key === "b" || e.key === "B")
+      ) {
         // Toggle watchlist sidebar (TradingView-style)
         e.preventDefault();
         setSidebarOpen((v) => !v);
       } else if (!isTyping && e.key === "Escape") {
         setFocusedPane((cur) => (cur != null ? null : cur));
-      } else if (!isTyping && !e.metaKey && !e.ctrlKey && !e.altKey && e.shiftKey && (e.key === "W" || e.key === "w")) {
+      } else if (
+        !isTyping &&
+        !e.metaKey &&
+        !e.ctrlKey &&
+        !e.altKey &&
+        e.shiftKey &&
+        (e.key === "W" || e.key === "w")
+      ) {
         // Shift+W = add current symbol to last-used watchlist (never removes).
         e.preventDefault();
         const sym = selectedSymbolRef.current;
@@ -482,16 +591,16 @@ function Index() {
         } else if (!lid || !ls.some((l) => l.id === lid)) {
           const focused = ls.find((l) => l.name.toLowerCase() === "focused");
           if (!focused) {
-            toast.info("Open the star menu and pick a list once — Shift+W will add to it next time");
+            toast.info(
+              "Open the star menu and pick a list once — Shift+W will add to it next time",
+            );
             return;
           }
           if (focused.symbols.some((x) => x.yahoo === sym.yahoo)) {
             toast.info(`${sym.ticker} already in “${focused.name}”`);
           } else {
             setLists((arr) =>
-              arr.map((l) =>
-                l.id === focused.id ? { ...l, symbols: [...l.symbols, sym] } : l,
-              ),
+              arr.map((l) => (l.id === focused.id ? { ...l, symbols: [...l.symbols, sym] } : l)),
             );
             setLastListId(focused.id);
             toast.success(`Added ${sym.ticker} to “${focused.name}”`);
@@ -503,9 +612,7 @@ function Index() {
             toast.info(`${sym.ticker} already in “${list.name}”`);
           } else {
             setLists((arr) =>
-              arr.map((l) =>
-                l.id === lid ? { ...l, symbols: [...l.symbols, sym] } : l,
-              ),
+              arr.map((l) => (l.id === lid ? { ...l, symbols: [...l.symbols, sym] } : l)),
             );
             toast.success(`Added ${sym.ticker} to “${list.name}”`);
           }
@@ -532,18 +639,17 @@ function Index() {
           });
         }
       }
-
-
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-
   useEffect(() => {
     // Defaults are sidebar closed + Daily focused, while keeping the usual
     // Daily / Hourly / Weekly panes available for shortcuts and tab switching.
-    let initialPanes: Pane[] = ensureSwitchableDefaultPanes(normalizePanes(loadJson<unknown>(PANES_KEY, DEFAULT_PANES)));
+    let initialPanes: Pane[] = ensureSwitchableDefaultPanes(
+      normalizePanes(loadJson<unknown>(PANES_KEY, DEFAULT_PANES)),
+    );
     let initialFocus: number | null = 0;
     try {
       const sp = new URLSearchParams(window.location.search);
@@ -552,18 +658,25 @@ function Index() {
       const paneRaw = sp.get("pane");
       if (tfRaw) {
         const valid = new Set(["5", "15", "30", "60", "D", "W", "M"]);
-        const list = tfRaw.split(",").map((s) => s.trim()).filter((s) => valid.has(s));
+        const list = tfRaw
+          .split(",")
+          .map((s) => s.trim())
+          .filter((s) => valid.has(s));
         // Back-compat: old URLs used ?tf=D to mean "show Daily". Treat a
         // single tf without an explicit focus/pane param as the active pane,
         // not as permission to delete the Hourly/Weekly panes.
         if (list.length > 1 || focusRaw != null || paneRaw != null) {
-          if (list.length) initialPanes = list.map((i) => ({ interval: i, range: defaultRangeFor(i) }));
+          if (list.length)
+            initialPanes = list.map((i) => ({ interval: i, range: defaultRangeFor(i) }));
           urlLockedPaneLayout.current = true;
         } else if (list.length === 1) {
           const idx = initialPanes.findIndex((p) => p.interval === list[0]);
           if (idx >= 0) initialFocus = idx;
           else {
-            initialPanes = [{ interval: list[0], range: defaultRangeFor(list[0]) }, ...initialPanes];
+            initialPanes = [
+              { interval: list[0], range: defaultRangeFor(list[0]) },
+              ...initialPanes,
+            ];
             initialFocus = 0;
           }
         }
@@ -626,8 +739,10 @@ function Index() {
           ? l.symbols
               .map((s: any) =>
                 typeof s === "string"
-                  ? resolveList([s])[0] ?? null
-                  : (s && s.yahoo ? (findSymbol(s.yahoo) ?? s) : null),
+                  ? (resolveList([s])[0] ?? null)
+                  : s && s.yahoo
+                    ? (findSymbol(s.yahoo) ?? s)
+                    : null,
               )
               .filter((x: NseSymbol | null): x is NseSymbol => Boolean(x))
           : [],
@@ -653,9 +768,10 @@ function Index() {
     const storedLast = loadJson<string | null>(LAST_LIST_KEY, null);
     // Default the star's quick-add target to Focused, even when an older
     // stored target was Buyable. Users can still choose any list in the menu.
-    const focusedId = (storedLists ?? makeDefaultLists()).find((l) => l.name.toLowerCase() === "focused")?.id ?? null;
+    const focusedId =
+      (storedLists ?? makeDefaultLists()).find((l) => l.name.toLowerCase() === "focused")?.id ??
+      null;
     setLastListId(focusedId ?? storedLast);
-
 
     const storedSel = loadJson<string | null>(SELECTED_KEY, null);
     setSelected(initialUrlSymbol.current ?? storedSel ?? resolved[0]?.yahoo ?? null);
@@ -706,7 +822,8 @@ function Index() {
     try {
       const sp = new URLSearchParams(window.location.search);
       const listName = group === "main" ? "main" : (lists.find((l) => l.id === group)?.name ?? "");
-      if (listName) sp.set("list", listName); else sp.delete("list");
+      if (listName) sp.set("list", listName);
+      else sp.delete("list");
       if (selected) {
         const sym = selected.endsWith(".NS") ? selected.slice(0, -3) : selected;
         sp.set("symbol", sym);
@@ -727,7 +844,9 @@ function Index() {
 
   useEffect(() => {
     if (!hydrated) return;
-    try { localStorage.setItem("kch.alerts.sound", alertSound ? "1" : "0"); } catch {}
+    try {
+      localStorage.setItem("kch.alerts.sound", alertSound ? "1" : "0");
+    } catch {}
   }, [alertSound, hydrated]);
 
   useEffect(() => {
@@ -776,8 +895,6 @@ function Index() {
     } catch {}
   }, [lastListId, hydrated]);
 
-
-
   useEffect(() => {
     if (!hydrated || !selected) return;
     try {
@@ -798,9 +915,8 @@ function Index() {
   // cursor must remain anchored to that list even after adding the symbol to
   // Holdings, Focused, or another watchlist.
   const navigationSymbols = useMemo(() => {
-    const source = group === "main"
-      ? watchlist
-      : (lists.find((list) => list.id === group)?.symbols ?? []);
+    const source =
+      group === "main" ? watchlist : (lists.find((list) => list.id === group)?.symbols ?? []);
     const seen = new Set<string>();
     return source.filter((symbol) => {
       const key = symbol.yahoo.toUpperCase();
@@ -810,10 +926,7 @@ function Index() {
     });
   }, [group, lists, watchlist]);
 
-  const navListOf = useCallback(
-    () => navigationSymbols,
-    [navigationSymbols],
-  );
+  const navListOf = useCallback(() => navigationSymbols, [navigationSymbols]);
 
   const currentNavPos = useCallback(
     (list: NseSymbol[]) => {
@@ -829,7 +942,7 @@ function Index() {
       const list = navListOf();
       if (list.length === 0) return;
       const base = currentNavPos(list);
-      const idx = (((base < 0 ? 0 : base) + delta) % list.length + list.length) % list.length;
+      const idx = ((((base < 0 ? 0 : base) + delta) % list.length) + list.length) % list.length;
       navPosRef.current = idx;
       const next = list[idx];
       if (next) setSelected(next.yahoo);
@@ -857,12 +970,25 @@ function Index() {
       const list = navListOf();
       if (list.length === 0) return;
 
-      if (e.key === "ArrowDown" || e.key === "j") { e.preventDefault(); stepSymbol(1); }
-      else if (e.key === "ArrowUp" || e.key === "k") { e.preventDefault(); stepSymbol(-1); }
-      else if (e.key === "PageDown") { e.preventDefault(); stepSymbol(10); }
-      else if (e.key === "PageUp") { e.preventDefault(); stepSymbol(-10); }
-      else if (e.key === "Home") { e.preventDefault(); gotoNavIndex(0); }
-      else if (e.key === "End") { e.preventDefault(); gotoNavIndex(list.length - 1); }
+      if (e.key === "ArrowDown" || e.key === "j") {
+        e.preventDefault();
+        stepSymbol(1);
+      } else if (e.key === "ArrowUp" || e.key === "k") {
+        e.preventDefault();
+        stepSymbol(-1);
+      } else if (e.key === "PageDown") {
+        e.preventDefault();
+        stepSymbol(10);
+      } else if (e.key === "PageUp") {
+        e.preventDefault();
+        stepSymbol(-10);
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        gotoNavIndex(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        gotoNavIndex(list.length - 1);
+      }
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
@@ -897,25 +1023,32 @@ function Index() {
           })
           .filter((s): s is NseSymbol => Boolean(s));
       };
-      if (remote.panes && !urlLockedPaneLayout.current) setPanes(ensureSwitchableDefaultPanes(normalizePanes(remote.panes)));
+      if (remote.panes && !urlLockedPaneLayout.current)
+        setPanes(ensureSwitchableDefaultPanes(normalizePanes(remote.panes)));
       if (remote.indicators) setIndicators(remote.indicators as IndicatorConfig);
 
-      if (remote.chart_cfg) setChartCfg({ ...DEFAULT_CHART_CONFIG, ...(remote.chart_cfg as Partial<ChartConfig>) });
+      if (remote.chart_cfg)
+        setChartCfg({ ...DEFAULT_CHART_CONFIG, ...(remote.chart_cfg as Partial<ChartConfig>) });
       if (remote.watchlist) setWatchlist(resolveList(remote.watchlist));
       if (remote.lists && Array.isArray(remote.lists)) {
-        setLists((remote.lists as CustomList[]).map((l) => ({
-          id: l.id,
-          name: l.name,
-          color: l.color,
-          notes: l.notes ?? {},
-          pinned: Boolean((l as any).pinned),
-          kind: (l as any).kind,
-          protected: Boolean((l as any).protected),
-          symbols: resolveList((l.symbols ?? []).map((s: any) => (typeof s === "string" ? s : s?.yahoo))),
-        })));
+        setLists(
+          (remote.lists as CustomList[]).map((l) => ({
+            id: l.id,
+            name: l.name,
+            color: l.color,
+            notes: l.notes ?? {},
+            pinned: Boolean((l as any).pinned),
+            kind: (l as any).kind,
+            protected: Boolean((l as any).protected),
+            symbols: resolveList(
+              (l.symbols ?? []).map((s: any) => (typeof s === "string" ? s : s?.yahoo)),
+            ),
+          })),
+        );
       }
       if ("last_list_id" in remote) setLastListId(remote.last_list_id ?? null);
-      if ("selected" in remote && remote.selected && !initialUrlSymbol.current) setSelected(remote.selected);
+      if ("selected" in remote && remote.selected && !initialUrlSymbol.current)
+        setSelected(remote.selected);
       if (Array.isArray(remote.alerts)) setAlerts(remote.alerts as Alert[]);
       if (typeof remote.alert_sound === "boolean") setAlertSound(remote.alert_sound);
     },
@@ -935,7 +1068,11 @@ function Index() {
     setAlerts((prev) =>
       prev.map((a) =>
         a.id === id
-          ? ({ ...a, lastBarTime, lastTriggeredAt: fired ? Date.now() : a.lastTriggeredAt } as Alert)
+          ? ({
+              ...a,
+              lastBarTime,
+              lastTriggeredAt: fired ? Date.now() : a.lastTriggeredAt,
+            } as Alert)
           : a,
       ),
     );
@@ -981,38 +1118,35 @@ function Index() {
     }
   };
 
-  const setMain = useCallback(
-    (updater: (cur: NseSymbol[]) => NseSymbol[]) => {
-      setWatchlist((wl) => {
-        const next = updater(wl);
-        setSelected((cur) => cur ?? next[0]?.yahoo ?? null);
-        return next;
-      });
-    },
-    [],
-  );
+  const setMain = useCallback((updater: (cur: NseSymbol[]) => NseSymbol[]) => {
+    setWatchlist((wl) => {
+      const next = updater(wl);
+      setSelected((cur) => cur ?? next[0]?.yahoo ?? null);
+      return next;
+    });
+  }, []);
 
-  const visiblePanes = focusedPane != null && panes[focusedPane]
-    ? [{ pane: panes[focusedPane], idx: focusedPane }]
-    : panes.map((pane, idx) => ({ pane, idx }));
+  const visiblePanes =
+    focusedPane != null && panes[focusedPane]
+      ? [{ pane: panes[focusedPane], idx: focusedPane }]
+      : panes.map((pane, idx) => ({ pane, idx }));
 
   const gridCols =
     visiblePanes.length === 1
       ? "grid-cols-1"
       : visiblePanes.length === 2
-      ? "grid-cols-1 md:grid-cols-2"
-      : visiblePanes.length === 3
-      ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
-      : visiblePanes.length === 4
-      ? "grid-cols-1 md:grid-cols-2"
-      : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3";
-
+        ? "grid-cols-1 md:grid-cols-2"
+        : visiblePanes.length === 3
+          ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+          : visiblePanes.length === 4
+            ? "grid-cols-1 md:grid-cols-2"
+            : "grid-cols-1 md:grid-cols-2 xl:grid-cols-3";
 
   const selectedSymbol = selected
-    ? (watchlist.find((s) => s.yahoo === selected)
-        ?? lists.flatMap((l) => l.symbols).find((s) => s.yahoo === selected)
-        ?? findSymbol(selected)
-        ?? customSymbol(selected))
+    ? (watchlist.find((s) => s.yahoo === selected) ??
+      lists.flatMap((l) => l.symbols).find((s) => s.yahoo === selected) ??
+      findSymbol(selected) ??
+      customSymbol(selected))
     : null;
 
   // Snapshot stats shown beside the watchlist position: price band, RS,
@@ -1024,7 +1158,8 @@ function Index() {
     queryFn: async () => {
       const { supabase } = await import("@/integrations/supabase/client");
       const yahoo = selectedSymbol!.yahoo;
-      const ticker = selectedSymbol!.ticker?.toUpperCase() ?? yahoo.replace(/\.(NS|BO)$/i, "").toUpperCase();
+      const ticker =
+        selectedSymbol!.ticker?.toUpperCase() ?? yahoo.replace(/\.(NS|BO)$/i, "").toUpperCase();
       const { data: snap } = await supabase
         .from("stock_snapshot")
         .select("price,high_52w,ath,rs_rating_n500,rs_rating")
@@ -1053,7 +1188,6 @@ function Index() {
     },
   });
   const symbolStats = symbolStatsQuery.data;
-
 
   // Keep refs in sync for the global keydown handler.
   listsRef.current = lists;
@@ -1088,7 +1222,6 @@ function Index() {
           <>
             <div className="mx-1 h-6 w-px shrink-0 bg-border" />
             <div className="flex min-w-0 flex-1 items-center gap-2">
-
               {(() => {
                 const navList = navigationSymbols;
                 const canNav = navList.length > 1;
@@ -1194,42 +1327,81 @@ function Index() {
                 )}
               </div>
             </div>
-
           </>
         )}
-
 
         <div className="ml-auto flex shrink-0 flex-nowrap items-center gap-1.5">
           {selectedSymbol && symbolStats && (
             <div className="hidden items-center gap-2 rounded-md border border-border bg-card/90 px-2 py-1 text-[11px] text-muted-foreground 2xl:flex">
               <span className="rounded bg-muted px-2 py-0.5 text-xs font-semibold text-foreground">
-                {navigationSymbols.length === 0 ? "— / —" : `${currentNavPos(navigationSymbols) + 1}/${navigationSymbols.length}`}
+                {navigationSymbols.length === 0
+                  ? "— / —"
+                  : `${currentNavPos(navigationSymbols) + 1}/${navigationSymbols.length}`}
               </span>
               <span className="h-4 w-px bg-border" />
               <div className="flex items-center gap-1 truncate" title="NSE price band">
                 <span className="text-muted-foreground">Band</span>
-                <span className={symbolStats.band != null ? (symbolStats.band <= 5 ? "text-amber-500" : "text-emerald-500") : "text-muted-foreground"}>
-                  {symbolStats.bandLabel ?? (symbolStats.band != null ? `${symbolStats.band}%` : "—")}
+                <span
+                  className={
+                    symbolStats.band != null
+                      ? symbolStats.band <= 5
+                        ? "text-amber-500"
+                        : "text-emerald-500"
+                      : "text-muted-foreground"
+                  }
+                >
+                  {symbolStats.bandLabel ??
+                    (symbolStats.band != null ? `${symbolStats.band}%` : "—")}
                 </span>
               </div>
               <span className="h-4 w-px bg-border" />
               <div className="flex items-center gap-1 truncate" title="Relative strength rating">
                 <span className="text-muted-foreground">RS</span>
-                <span className={symbolStats.rs != null ? (symbolStats.rs >= 70 ? "text-emerald-500" : symbolStats.rs <= 30 ? "text-rose-500" : "text-amber-500") : "text-muted-foreground"}>
+                <span
+                  className={
+                    symbolStats.rs != null
+                      ? symbolStats.rs >= 70
+                        ? "text-emerald-500"
+                        : symbolStats.rs <= 30
+                          ? "text-rose-500"
+                          : "text-amber-500"
+                      : "text-muted-foreground"
+                  }
+                >
                   {symbolStats.rs != null ? Math.round(symbolStats.rs) : "—"}
                 </span>
               </div>
               <span className="h-4 w-px bg-border" />
               <div className="flex items-center gap-1 truncate" title="% below 52-week high">
                 <span className="text-muted-foreground">52wH</span>
-                <span className={symbolStats.pct52w != null ? (symbolStats.pct52w <= 5 ? "text-emerald-500" : symbolStats.pct52w <= 10 ? "text-amber-500" : "text-rose-500") : "text-muted-foreground"}>
+                <span
+                  className={
+                    symbolStats.pct52w != null
+                      ? symbolStats.pct52w <= 5
+                        ? "text-emerald-500"
+                        : symbolStats.pct52w <= 10
+                          ? "text-amber-500"
+                          : "text-rose-500"
+                      : "text-muted-foreground"
+                  }
+                >
                   {symbolStats.pct52w != null ? `-${symbolStats.pct52w.toFixed(1)}%` : "—"}
                 </span>
               </div>
               <span className="h-4 w-px bg-border" />
               <div className="flex items-center gap-1 truncate" title="% below all-time high">
                 <span className="text-muted-foreground">ATH</span>
-                <span className={symbolStats.pctAth != null ? (symbolStats.pctAth <= 5 ? "text-emerald-500" : symbolStats.pctAth <= 10 ? "text-amber-500" : "text-rose-500") : "text-muted-foreground"}>
+                <span
+                  className={
+                    symbolStats.pctAth != null
+                      ? symbolStats.pctAth <= 5
+                        ? "text-emerald-500"
+                        : symbolStats.pctAth <= 10
+                          ? "text-amber-500"
+                          : "text-rose-500"
+                      : "text-muted-foreground"
+                  }
+                >
                   {symbolStats.pctAth != null ? `-${symbolStats.pctAth.toFixed(1)}%` : "—"}
                 </span>
               </div>
@@ -1258,7 +1430,13 @@ function Index() {
           </div>
           <Popover>
             <PopoverTrigger asChild>
-              <Button size="sm" variant="outline" className="px-2 2xl:hidden" aria-label="Chart tools" title="Chart & indicator settings">
+              <Button
+                size="sm"
+                variant="outline"
+                className="px-2 2xl:hidden"
+                aria-label="Chart tools"
+                title="Chart & indicator settings"
+              >
                 <Settings2 className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
@@ -1271,7 +1449,9 @@ function Index() {
           </Popover>
 
           <Link to="/screeners">
-            <Button size="sm" variant="outline">Screeners</Button>
+            <Button size="sm" variant="outline">
+              Screeners
+            </Button>
           </Link>
           <Link to="/price-alerts" title="Price & volume alerts">
             <Button size="sm" variant="outline" className="px-2" aria-label="Alerts">
@@ -1279,11 +1459,11 @@ function Index() {
             </Button>
           </Link>
 
-
           <Link to="/journal">
-            <Button size="sm" variant="outline">Journal</Button>
+            <Button size="sm" variant="outline">
+              Journal
+            </Button>
           </Link>
-
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -1293,7 +1473,10 @@ function Index() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-52">
               <DropdownMenuItem
-                onSelect={(e) => { e.preventDefault(); addPane(); }}
+                onSelect={(e) => {
+                  e.preventDefault();
+                  addPane();
+                }}
                 disabled={panes.length >= 6}
               >
                 <Plus className="mr-2 h-3.5 w-3.5" />
@@ -1316,23 +1499,16 @@ function Index() {
               <DropdownMenuItem asChild>
                 <Link to="/position-analyzer">Position analyzer</Link>
               </DropdownMenuItem>
-
             </DropdownMenuContent>
           </DropdownMenu>
 
           <ProfileMenu withNavMenu={false} />
-
         </div>
       </header>
 
-
-
       <div className="flex min-h-0 flex-1 overflow-hidden">
         {sidebarOpen && (
-          <aside
-            className="relative shrink-0"
-            style={{ width: `${sidebarWidth}px` }}
-          >
+          <aside className="relative shrink-0" style={{ width: `${sidebarWidth}px` }}>
             <Watchlist
               main={watchlist}
               setMain={setMain}
@@ -1374,7 +1550,6 @@ function Index() {
           </aside>
         )}
 
-
         <main
           ref={captureRef}
           className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden p-1 md:p-2"
@@ -1384,7 +1559,8 @@ function Index() {
             (e.currentTarget as any)._sw = { x: t.clientX, y: t.clientY, t: Date.now() };
           }}
           onTouchEnd={(e) => {
-            const start = (e.currentTarget as any)._sw as { x: number; y: number; t: number } | undefined;
+            const start = (e.currentTarget as any)._sw as
+              { x: number; y: number; t: number } | undefined;
             if (!start) return;
             (e.currentTarget as any)._sw = undefined;
             const t = e.changedTouches[0];
@@ -1433,32 +1609,70 @@ function Index() {
                     <span className="inline-flex h-6 items-center gap-2 rounded border border-border bg-muted/30 px-1.5 text-[11px]">
                       <span title="NSE price band">
                         <span className="text-muted-foreground">Band </span>
-                        <span className={symbolStats.band != null ? (symbolStats.band <= 5 ? "text-amber-500" : "text-emerald-500") : "text-muted-foreground"}>
-                          {symbolStats.bandLabel ?? (symbolStats.band != null ? `${symbolStats.band}%` : "—")}
+                        <span
+                          className={
+                            symbolStats.band != null
+                              ? symbolStats.band <= 5
+                                ? "text-amber-500"
+                                : "text-emerald-500"
+                              : "text-muted-foreground"
+                          }
+                        >
+                          {symbolStats.bandLabel ??
+                            (symbolStats.band != null ? `${symbolStats.band}%` : "—")}
                         </span>
                       </span>
                       <span title="Relative strength rating">
                         <span className="text-muted-foreground">RS </span>
-                        <span className={symbolStats.rs != null ? (symbolStats.rs >= 70 ? "text-emerald-500" : symbolStats.rs <= 30 ? "text-rose-500" : "text-amber-500") : "text-muted-foreground"}>
+                        <span
+                          className={
+                            symbolStats.rs != null
+                              ? symbolStats.rs >= 70
+                                ? "text-emerald-500"
+                                : symbolStats.rs <= 30
+                                  ? "text-rose-500"
+                                  : "text-amber-500"
+                              : "text-muted-foreground"
+                          }
+                        >
                           {symbolStats.rs != null ? Math.round(symbolStats.rs) : "—"}
                         </span>
                       </span>
                       <span title="% below 52-week high">
                         <span className="text-muted-foreground">52wH </span>
-                        <span className={symbolStats.pct52w != null ? (symbolStats.pct52w <= 5 ? "text-emerald-500" : symbolStats.pct52w <= 10 ? "text-amber-500" : "text-rose-500") : "text-muted-foreground"}>
+                        <span
+                          className={
+                            symbolStats.pct52w != null
+                              ? symbolStats.pct52w <= 5
+                                ? "text-emerald-500"
+                                : symbolStats.pct52w <= 10
+                                  ? "text-amber-500"
+                                  : "text-rose-500"
+                              : "text-muted-foreground"
+                          }
+                        >
                           {symbolStats.pct52w != null ? `-${symbolStats.pct52w.toFixed(1)}%` : "—"}
                         </span>
                       </span>
                       <span title="% below all-time high">
                         <span className="text-muted-foreground">ATH </span>
-                        <span className={symbolStats.pctAth != null ? (symbolStats.pctAth <= 5 ? "text-emerald-500" : symbolStats.pctAth <= 10 ? "text-amber-500" : "text-rose-500") : "text-muted-foreground"}>
+                        <span
+                          className={
+                            symbolStats.pctAth != null
+                              ? symbolStats.pctAth <= 5
+                                ? "text-emerald-500"
+                                : symbolStats.pctAth <= 10
+                                  ? "text-amber-500"
+                                  : "text-rose-500"
+                              : "text-muted-foreground"
+                          }
+                        >
                           {symbolStats.pctAth != null ? `-${symbolStats.pctAth.toFixed(1)}%` : "—"}
                         </span>
                       </span>
                     </span>
                   </>
                 )}
-
               </div>
             </div>
           )}
@@ -1478,7 +1692,9 @@ function Index() {
                 return (
                   <div
                     key={`${idx}-${pane.interval}`}
-                    ref={(el) => { paneRefs.current[idx] = el; }}
+                    ref={(el) => {
+                      paneRefs.current[idx] = el;
+                    }}
                     className="flex min-h-0 min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card"
                   >
                     <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border px-2 py-1.5">
@@ -1498,10 +1714,7 @@ function Index() {
                             ))}
                           </SelectContent>
                         </Select>
-                        <Select
-                          value={pane.range}
-                          onValueChange={(v) => setPaneRange(idx, v)}
-                        >
+                        <Select value={pane.range} onValueChange={(v) => setPaneRange(idx, v)}>
                           <SelectTrigger
                             className="h-7 w-[100px] border border-border/60 bg-transparent px-2 text-[11px] text-muted-foreground shadow-none focus:ring-0"
                             title="Lookback range"
@@ -1516,7 +1729,11 @@ function Index() {
                             ))}
                           </SelectContent>
                         </Select>
-                        <VolumeInfo bar={hoverBars[idx] ?? null} fields={barFields} onFieldsChange={setBarFields} />
+                        <VolumeInfo
+                          bar={hoverBars[idx] ?? null}
+                          fields={barFields}
+                          onFieldsChange={setBarFields}
+                        />
                         {idx === 0 && <DataFreshnessBadge className="ml-auto" />}
                       </div>
                       <span className="truncate text-xs font-medium text-muted-foreground">
@@ -1554,11 +1771,18 @@ function Index() {
                           onClick={() => setFocusedPane((cur) => (cur === idx ? null : idx))}
                           className="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                           aria-label={focusedPane === idx ? "Restore grid" : "Focus pane"}
-                          title={focusedPane === idx ? `Restore grid (Esc or 0)` : `Focus this pane (${idx + 1}) · Esc to restore`}
+                          title={
+                            focusedPane === idx
+                              ? `Restore grid (Esc or 0)`
+                              : `Focus this pane (${idx + 1}) · Esc to restore`
+                          }
                         >
-                          {focusedPane === idx ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+                          {focusedPane === idx ? (
+                            <Minimize2 className="h-3.5 w-3.5" />
+                          ) : (
+                            <Maximize2 className="h-3.5 w-3.5" />
+                          )}
                         </button>
-
 
                         <button
                           onClick={() => removePane(idx)}
@@ -1586,7 +1810,9 @@ function Index() {
                         alertSoundEnabled={alertSound}
                         onAlertUpdate={handleAlertUpdate}
                         onHoverBarChange={(bar) =>
-                          setHoverBars((prev) => (prev[idx] === bar ? prev : { ...prev, [idx]: bar }))
+                          setHoverBars((prev) =>
+                            prev[idx] === bar ? prev : { ...prev, [idx]: bar },
+                          )
                         }
                       />
                     </div>
@@ -1622,7 +1848,6 @@ function Index() {
         onSelect={setSelected}
       />
     </div>
-
   );
 }
 
@@ -1632,8 +1857,8 @@ function EmptyState() {
       <div className="max-w-sm text-center">
         <h2 className="text-base font-semibold">No symbols in watchlist</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Open the sidebar and click <span className="font-medium text-foreground">Add</span> to pick
-          NSE stocks or indices.
+          Open the sidebar and click <span className="font-medium text-foreground">Add</span> to
+          pick NSE stocks or indices.
         </p>
       </div>
     </div>

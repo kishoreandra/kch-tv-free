@@ -75,8 +75,7 @@ export async function sendTelegram(
   if (!chatId) {
     return {
       sent: false,
-      reason:
-        "No Telegram chat id. Send any message to your bot once, or set TELEGRAM_CHAT_ID.",
+      reason: "No Telegram chat id. Send any message to your bot once, or set TELEGRAM_CHAT_ID.",
     };
   }
   // Long digests are delivered as several numbered messages instead of being
@@ -101,7 +100,11 @@ export async function sendTelegram(
     try {
       const parsed = JSON.parse(raw) as { ok?: boolean; description?: string };
       if (parsed.ok === false) {
-        return { sent: false, reason: parsed.description ?? "Telegram rejected the message", chatId };
+        return {
+          sent: false,
+          reason: parsed.description ?? "Telegram rejected the message",
+          chatId,
+        };
       }
     } catch {
       /* non-JSON success body is fine */
@@ -109,4 +112,3 @@ export async function sendTelegram(
   }
   return { sent: true, chatId };
 }
-

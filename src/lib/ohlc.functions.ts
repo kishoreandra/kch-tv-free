@@ -81,7 +81,13 @@ function istDateKeyFromUnix(seconds: number): string {
   return `${p.year}-${String(p.month).padStart(2, "0")}-${String(p.day).padStart(2, "0")}`;
 }
 
-function unixFromIstDateTime(year: number, month: number, day: number, hour: number, minute: number): number {
+function unixFromIstDateTime(
+  year: number,
+  month: number,
+  day: number,
+  hour: number,
+  minute: number,
+): number {
   return Math.floor(Date.UTC(year, month - 1, day, hour, minute) / 1000 - IST_OFFSET_SECONDS);
 }
 
@@ -114,7 +120,10 @@ function yahooSymbolVariants(symbol: string): string[] {
   const out: string[] = [];
   const push = (s: string) => {
     const full = s + suffix;
-    if (!seen.has(full)) { seen.add(full); out.push(full); }
+    if (!seen.has(full)) {
+      seen.add(full);
+      out.push(full);
+    }
   };
   push(stem);
   if (stem.includes("_")) push(stem.replace(/_/g, "-"));
@@ -149,7 +158,10 @@ async function resolveViaYahooSearch(symbol: string): Promise<string | null> {
         (q) =>
           typeof q?.symbol === "string" &&
           /\.NS$/i.test(q.symbol) &&
-          q.symbol.replace(/\.NS$/i, "").replace(/-(RR|IV|SM)$/i, "").toUpperCase() === stem.toUpperCase(),
+          q.symbol
+            .replace(/\.NS$/i, "")
+            .replace(/-(RR|IV|SM)$/i, "")
+            .toUpperCase() === stem.toUpperCase(),
       );
       resolved = match?.symbol ?? null;
     }
@@ -226,8 +238,6 @@ async function fetchYahooResult(symbol: string, yInterval: string, range: string
   throw lastErr instanceof Error ? lastErr : new Error(`No Yahoo data for ${symbol}`);
 }
 
-
-
 function parseYahooCandles(result: any, intervalCode: string): Candle[] {
   const timestamps: number[] = result.timestamp ?? [];
   const quote = result.indicators?.quote?.[0] ?? {};
@@ -246,7 +256,9 @@ function parseYahooCandles(result: any, intervalCode: string): Candle[] {
       c = closes[i];
     if (o == null || h == null || l == null || c == null) continue;
 
-    const time = intervalMinutes ? normalizedIntradayTime(timestamps[i], intervalMinutes) : timestamps[i];
+    const time = intervalMinutes
+      ? normalizedIntradayTime(timestamps[i], intervalMinutes)
+      : timestamps[i];
     const candle: Candle = {
       time,
       open: o,
@@ -281,11 +293,18 @@ function isSameBar(a: any, b: any): boolean {
   );
 }
 
-async function mergeOfficialDailyCandles(supabase: any, symbol: string, candles: Candle[]): Promise<Candle[]> {
+async function mergeOfficialDailyCandles(
+  supabase: any,
+  symbol: string,
+  candles: Candle[],
+): Promise<Candle[]> {
   // Only patch the most recent sessions. Yahoo history is split/bonus adjusted
   // while the official NSE file is raw, so merging deep history would create
   // artificial gaps on the chart. The recent tail is what can be stale.
-  const ticker = symbol.replace(/\.(NS|BO)$/i, "").trim().toUpperCase();
+  const ticker = symbol
+    .replace(/\.(NS|BO)$/i, "")
+    .trim()
+    .toUpperCase();
   const { data, error } = await supabase
     .from("daily_prices")
     .select("trade_date,open,high,low,close,volume")
@@ -331,7 +350,6 @@ async function mergeOfficialDailyCandles(supabase: any, symbol: string, candles:
   }
   return [...merged.values()].sort((a, b) => a.time - b.time);
 }
-
 
 async function fetchLatestCompleteIntradayDaily(symbol: string): Promise<Candle | null> {
   try {
@@ -412,7 +430,9 @@ async function fetchLatestAdr20(symbol: string): Promise<number | null> {
     const closes: (number | null)[] = quote.close ?? [];
     const ranges: number[] = [];
     for (let i = 0; i < closes.length; i++) {
-      const h = highs[i], l = lows[i], c = closes[i];
+      const h = highs[i],
+        l = lows[i],
+        c = closes[i];
       if (h == null || l == null || c == null || c <= 0) continue;
       ranges.push(((h - l) / c) * 100);
     }
@@ -498,14 +518,19 @@ export const getOhlc = createServerFn({ method: "GET" })
       }
     }
 
-    const dailyRanges = yInterval === "1d"
-      ? candles.filter((c) => c.close > 0).map((c) => ((c.high - c.low) / c.close) * 100).slice(-20)
-      : [];
-    const latestAdr20 = dailyRanges.length >= 20
-      ? dailyRanges.reduce((sum, v) => sum + v, 0) / dailyRanges.length
-      : fromArchive
-        ? null
-        : await fetchLatestAdr20(data.symbol);
+    const dailyRanges =
+      yInterval === "1d"
+        ? candles
+            .filter((c) => c.close > 0)
+            .map((c) => ((c.high - c.low) / c.close) * 100)
+            .slice(-20)
+        : [];
+    const latestAdr20 =
+      dailyRanges.length >= 20
+        ? dailyRanges.reduce((sum, v) => sum + v, 0) / dailyRanges.length
+        : fromArchive
+          ? null
+          : await fetchLatestAdr20(data.symbol);
     for (const candle of candles) candle.adr20 = latestAdr20;
     applyAtr14(candles);
 

@@ -73,7 +73,13 @@ async function fetchYahooDaily(symbol: string, years: number) {
  */
 export async function backfillViaYahoo(
   admin: any,
-  opts: { symbols?: string[]; scope?: "tracked" | "universe"; years?: number; limit?: number; offset?: number } = {},
+  opts: {
+    symbols?: string[];
+    scope?: "tracked" | "universe";
+    years?: number;
+    limit?: number;
+    offset?: number;
+  } = {},
 ): Promise<YahooBackfillResult> {
   const years = Math.min(Math.max(Number(opts.years) || 3, 1), 10);
   const limit = Math.min(Math.max(Number(opts.limit) || 60, 1), 120);

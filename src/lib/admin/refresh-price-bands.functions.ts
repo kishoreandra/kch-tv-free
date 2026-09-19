@@ -19,13 +19,16 @@ export const refreshPriceBandsNow = createServerFn({ method: "POST" })
     });
     const text = await res.text();
     if (!res.ok) {
-      throw new Error(`Official NSE price-band refresh failed (${res.status}): ${text.slice(0, 200)}`);
+      throw new Error(
+        `Official NSE price-band refresh failed (${res.status}): ${text.slice(0, 200)}`,
+      );
     }
     try {
       const j = JSON.parse(text);
       const b = j?.bandChanges;
       const changes = b?.changes;
-      const extra = typeof changes === "number" ? `, ${changes} band change${changes === 1 ? "" : "s"}` : "";
+      const extra =
+        typeof changes === "number" ? `, ${changes} band change${changes === 1 ? "" : "s"}` : "";
       // Delivery status belongs in the message: a failed Telegram send used to
       // look exactly like a successful one, so the alert could go missing
       // without a word anywhere.
@@ -43,4 +46,4 @@ export const refreshPriceBandsNow = createServerFn({ method: "POST" })
     } catch {
       return { message: text.slice(0, 200), alerted: null, alertError: null };
     }
-});
+  });

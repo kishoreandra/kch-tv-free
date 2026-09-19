@@ -11,9 +11,7 @@ import { requireAdminAuth } from "@/lib/auth/approved-middleware";
 // where it stopped so it can simply be called again.
 export const backfillIndexHistory = createServerFn({ method: "POST" })
   .middleware([requireAdminAuth])
-  .inputValidator(
-    (data: { from?: string; batchDays?: number; budgetMs?: number }) => data ?? {},
-  )
+  .inputValidator((data: { from?: string; batchDays?: number; budgetMs?: number }) => data ?? {})
   .handler(async ({ data }) => {
     const apiKey = process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? "";
     if (!apiKey) throw new Error("Backend publishable key is not configured");

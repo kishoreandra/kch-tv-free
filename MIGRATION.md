@@ -53,6 +53,7 @@ entry in the repo's `wrangler.jsonc` is overridden by the build (this is a
 known item to reconcile — see `LOVABLE-EXIT.md`).
 
 ### Or Vercel Hobby — preferred if the heavy Bhavcopy ingestion jobs hit
+
 Cloudflare's 10 ms CPU limit. Import the repo at vercel.com, build command
 `npm run build`.
 
@@ -83,11 +84,11 @@ time** — they must be present during `npm run build`, not just at runtime.
 There are **14** cron endpoints under `/api/public/cron/`. They do **not**
 all use the same guard — check the table before wiring a scheduler:
 
-| Guard | Endpoints |
-| --- | --- |
-| `x-cron-secret: $CRON_SECRET` only | `refresh-snapshot`, `refresh-vol-maxes`, `snapshot-breadth`, `evaluate-alerts`, `deliver-reminders` |
-| `apikey: <anon key>` only | `refresh-price-bands` |
-| either header | `ingest-daily`, `ingest-bhavcopy`, `ingest-index-close`, `ingest-deals`, `cleanup-band-changes`, `backfill-prices`, `backfill-bhavcopy`, `backfill-index-close` |
+| Guard                              | Endpoints                                                                                                                                                       |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `x-cron-secret: $CRON_SECRET` only | `refresh-snapshot`, `refresh-vol-maxes`, `snapshot-breadth`, `evaluate-alerts`, `deliver-reminders`                                                             |
+| `apikey: <anon key>` only          | `refresh-price-bands`                                                                                                                                           |
+| either header                      | `ingest-daily`, `ingest-bhavcopy`, `ingest-index-close`, `ingest-deals`, `cleanup-band-changes`, `backfill-prices`, `backfill-bhavcopy`, `backfill-index-close` |
 
 Calling `refresh-price-bands` with `x-cron-secret` returns **401** — it only
 accepts the Supabase publishable key.
@@ -95,22 +96,22 @@ accepts the Supabase publishable key.
 Suggested schedules (UTC); the authoritative schedules live in the
 `cron.schedule` calls inside `supabase/migrations/`:
 
-| Endpoint | Suggested schedule (UTC) |
-| --- | --- |
-| `/api/public/cron/refresh-price-bands` | `30 1,13 * * 1-5` (07:00 / 19:00 IST) |
-| `/api/public/cron/ingest-daily` | `0 12 * * 1-5` |
-| `/api/public/cron/ingest-bhavcopy` | `15 12 * * 1-5` |
-| `/api/public/cron/snapshot-breadth` | `30 12 * * 1-5` |
-| `/api/public/cron/ingest-index-close` | `35 12 * * 1-5` |
-| `/api/public/cron/ingest-deals` | `45 12 * * 1-5` |
-| `/api/public/cron/refresh-snapshot` | `0 13 * * 1-5` |
-| `/api/public/cron/refresh-vol-maxes` | `15 13 * * 1-5` |
-| `/api/public/cron/evaluate-alerts` | `*/15 3-10 * * 1-5` |
-| `/api/public/cron/deliver-reminders` | `*/15 3-12 * * 1-5` |
-| `/api/public/cron/cleanup-band-changes` | `30 13 * * 5` (Fri 19:00 IST) |
-| `/api/public/cron/backfill-prices` | manual / on demand |
-| `/api/public/cron/backfill-bhavcopy` | manual / on demand |
-| `/api/public/cron/backfill-index-close` | manual / on demand |
+| Endpoint                                | Suggested schedule (UTC)              |
+| --------------------------------------- | ------------------------------------- |
+| `/api/public/cron/refresh-price-bands`  | `30 1,13 * * 1-5` (07:00 / 19:00 IST) |
+| `/api/public/cron/ingest-daily`         | `0 12 * * 1-5`                        |
+| `/api/public/cron/ingest-bhavcopy`      | `15 12 * * 1-5`                       |
+| `/api/public/cron/snapshot-breadth`     | `30 12 * * 1-5`                       |
+| `/api/public/cron/ingest-index-close`   | `35 12 * * 1-5`                       |
+| `/api/public/cron/ingest-deals`         | `45 12 * * 1-5`                       |
+| `/api/public/cron/refresh-snapshot`     | `0 13 * * 1-5`                        |
+| `/api/public/cron/refresh-vol-maxes`    | `15 13 * * 1-5`                       |
+| `/api/public/cron/evaluate-alerts`      | `*/15 3-10 * * 1-5`                   |
+| `/api/public/cron/deliver-reminders`    | `*/15 3-12 * * 1-5`                   |
+| `/api/public/cron/cleanup-band-changes` | `30 13 * * 5` (Fri 19:00 IST)         |
+| `/api/public/cron/backfill-prices`      | manual / on demand                    |
+| `/api/public/cron/backfill-bhavcopy`    | manual / on demand                    |
+| `/api/public/cron/backfill-index-close` | manual / on demand                    |
 
 **Pick ONE scheduler.** Running `pg_cron` (installed by the migrations) and
 an external scheduler (cron-job.org / GitHub Actions) together double-fires
@@ -126,7 +127,7 @@ header per the guard table above.
 name: NSE crons
 on:
   schedule:
-    - cron: '0 12 * * 1-5'
+    - cron: "0 12 * * 1-5"
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -159,6 +160,7 @@ curl -i -X POST "https://<your-domain>/api/public/cron/snapshot-breadth" \
 Then sign in on the site and confirm a watchlist saves.
 
 ### Free-tier notes
+
 - Supabase Free: 500 MB DB; weekday crons keep it from auto-pausing.
 - Cloudflare Free: 100k req/day; move heavy ingestion to Vercel or a GitHub
   Actions runner if you hit CPU limits.

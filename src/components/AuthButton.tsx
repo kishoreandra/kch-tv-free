@@ -40,7 +40,11 @@ export function AuthButton({ extraMenuItems }: { extraMenuItems?: ReactNode } = 
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full bg-primary/15 text-xs font-semibold text-primary">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 rounded-full bg-primary/15 text-xs font-semibold text-primary"
+          >
             {label}
           </Button>
         </DropdownMenuTrigger>
@@ -138,7 +142,9 @@ export function AuthButton({ extraMenuItems }: { extraMenuItems?: ReactNode } = 
 
           <div className="space-y-2">
             <div className="space-y-1">
-              <Label htmlFor="auth-email" className="text-xs">Email</Label>
+              <Label htmlFor="auth-email" className="text-xs">
+                Email
+              </Label>
               <Input
                 id="auth-email"
                 type="email"
@@ -148,7 +154,9 @@ export function AuthButton({ extraMenuItems }: { extraMenuItems?: ReactNode } = 
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="auth-password" className="text-xs">Password</Label>
+              <Label htmlFor="auth-password" className="text-xs">
+                Password
+              </Label>
               <Input
                 id="auth-password"
                 type="password"

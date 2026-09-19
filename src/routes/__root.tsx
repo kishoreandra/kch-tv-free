@@ -74,15 +74,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "NSE MultiView — Multi-Timeframe Charts, Screeners & Alerts" },
-      { name: "description", content: "Trade View Companion provides multi-timeframe stock charting for Indian markets." },
+      {
+        name: "description",
+        content: "Trade View Companion provides multi-timeframe stock charting for Indian markets.",
+      },
       { name: "author", content: "NSE MultiView" },
-      { property: "og:title", content: "NSE MultiView — Multi-Timeframe Charts, Screeners & Alerts" },
-      { property: "og:description", content: "Trade View Companion provides multi-timeframe stock charting for Indian markets." },
+      {
+        property: "og:title",
+        content: "NSE MultiView — Multi-Timeframe Charts, Screeners & Alerts",
+      },
+      {
+        property: "og:description",
+        content: "Trade View Companion provides multi-timeframe stock charting for Indian markets.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      
-      { name: "twitter:title", content: "NSE MultiView — Multi-Timeframe Charts, Screeners & Alerts" },
-      { name: "twitter:description", content: "Trade View Companion provides multi-timeframe stock charting for Indian markets." },
+
+      {
+        name: "twitter:title",
+        content: "NSE MultiView — Multi-Timeframe Charts, Screeners & Alerts",
+      },
+      {
+        name: "twitter:description",
+        content: "Trade View Companion provides multi-timeframe stock charting for Indian markets.",
+      },
       { property: "og:image", content: "/favicon.png" },
       { name: "twitter:image", content: "/favicon.png" },
     ],

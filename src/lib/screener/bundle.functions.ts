@@ -60,7 +60,10 @@ async function fetchCandles(symbol: string, kind: "D" | "W" | "60"): Promise<Can
   const volumes: (number | null)[] = q.volume ?? [];
   const out: Candle[] = [];
   for (let i = 0; i < timestamps.length; i++) {
-    const o = opens[i], h = highs[i], l = lows[i], c = closes[i];
+    const o = opens[i],
+      h = highs[i],
+      l = lows[i],
+      c = closes[i];
     if (o == null || h == null || l == null || c == null) continue;
     out.push({ time: timestamps[i], open: o, high: h, low: l, close: c, volume: volumes[i] ?? 0 });
   }
