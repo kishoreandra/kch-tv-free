@@ -116,7 +116,12 @@ Only remaining `lovable` match in `src/` is the NSE ticker `LOVABLE` in
       install the ~19 jobs, so no extra account or dashboard setup; cron-job.org will
       NOT be scheduled for these jobs (double-fire trap). It may still be used as a
       manual "run now" console for backfills, with no overlapping schedules.
-- [ ] Cloudflare Workers vs Vercel (the 10 ms CPU limit risks the Bhavcopy ingestion).
+- [x] Cloudflare Workers vs Vercel — **CHOSEN: Cloudflare Workers (19-Sep-2026)**.
+      Zero build-config change (nitro already emits `cloudflare-module`, wrangler config
+      ready). The ingestion endpoints are already chunked (`offset`/`limit` slices,
+      `batchDays`/`budgetMs`, one bhavcopy session per call) to fit the 10 ms CPU limit.
+      If live testing shows the limit is still blown, migrate to Vercel Hobby — a small
+      config change, not a rewrite.
 
 ### Phase 3+ — one item must not be missed
 
@@ -211,8 +216,8 @@ migration commit is a reviewable delta against it.
 ### Still open
 
 1. ~~One scheduler only~~ — **CHOSEN: pg_cron** (19-Sep-2026; see PENDING section).
-2. **Cloudflare Workers vs Vercel** — the guide warns Bhavcopy ingestion may exceed
-   Cloudflare's 10 ms CPU limit.
+2. ~~Cloudflare Workers vs Vercel~~ — **CHOSEN: Cloudflare Workers** (19-Sep-2026;
+   see PENDING section).
 3. ~~Cherry-pick either orphaned branch~~ — deferred/declined (see PENDING section);
    only `ce11076`'s core idea (public constituents page) remains a possible manual
    re-apply if wanted later.
