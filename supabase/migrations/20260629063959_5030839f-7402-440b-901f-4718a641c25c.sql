@@ -1,0 +1,1 @@
+ALTER TABLE public.stock_snapshot ADD COLUMN IF NOT EXISTS open numeric;

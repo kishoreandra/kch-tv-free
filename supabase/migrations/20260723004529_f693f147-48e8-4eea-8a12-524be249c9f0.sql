@@ -1,0 +1,1 @@
+ALTER TABLE public.stock_snapshot ADD COLUMN IF NOT EXISTS earnings_release_date timestamptz;

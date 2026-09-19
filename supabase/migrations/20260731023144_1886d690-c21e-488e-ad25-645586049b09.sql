@@ -1,0 +1,1 @@
+ALTER TABLE public.stock_snapshot ADD COLUMN IF NOT EXISTS avg_price_30d numeric, ADD COLUMN IF NOT EXISTS avg_turnover_30d numeric;

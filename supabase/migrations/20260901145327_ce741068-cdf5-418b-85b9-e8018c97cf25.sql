@@ -1,0 +1,2 @@
+REVOKE EXECUTE ON FUNCTION public.compute_market_breadth(date, numeric, numeric) FROM authenticated, anon, PUBLIC;
+GRANT EXECUTE ON FUNCTION public.compute_market_breadth(date, numeric, numeric) TO service_role;

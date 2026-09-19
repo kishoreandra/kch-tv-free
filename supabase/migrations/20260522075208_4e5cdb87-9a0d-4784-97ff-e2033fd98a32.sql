@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.enforce_user_cap() FROM PUBLIC, anon, authenticated;

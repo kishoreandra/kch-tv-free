@@ -1,0 +1,1 @@
+DELETE FROM public.market_breadth_daily WHERE universe_count < 1000;
