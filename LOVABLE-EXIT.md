@@ -48,10 +48,13 @@ Everything outstanding in one list. Phase detail is further down.
 
 ### Hygiene — do these first
 
-- [ ] **Create the GitHub remote and push.** This repo has **no remote and no backup**;
-      the commits exist only as this folder on disk. The gate you set (build passes
-      locally) is now met. Pushing needs auth fixed first: the SSH key on this machine is
-      not authorized on `kishoreandra`, so use HTTPS + PAT or `gh auth login`.
+- [x] **Create the GitHub remote and push — DONE (19-Sep-2026).** `origin` =
+      `https://github.com/kishoreandra/kch-tv-free.git` (private). All commits pushed;
+      `main` tracks `origin/main`. Auth was fixed by deleting the stale
+      `git:https://github.com` Windows credential (it held the wrong account,
+      `pranay-999`); the fresh Git-Credential-Manager browser sign-in then succeeded.
+      Note: do **not** push to `upstream` — its push URL is deliberately
+      `DISABLED-read-only`.
 - [x] **Rewrite `MIGRATION.md`.** Done: npm everywhere (no bun), all 14 cron endpoints
       listed with the correct per-endpoint guard table, `APP_URL` documented, and the
       Phase 3 pg_cron host-rewrite warning added.
