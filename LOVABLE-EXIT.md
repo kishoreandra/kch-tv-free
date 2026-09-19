@@ -102,9 +102,21 @@ Only remaining `lovable` match in `src/` is the NSE ticker `LOVABLE` in
       stale `"main": "src/server.ts"` field; the warning is gone and the emitted config
       is unchanged. Deploy with `npx wrangler deploy` from `.output/server/` (or let the
       deploy step pick the generated config).
-- [ ] One scheduler only: `pg_cron` XOR cron-job.org (running both double-fires every job).
+- [x] Cherry-pick orphaned branches — **DEFERRED / leaning decline (19-Sep-2026).**
+      - `upstream/origin/main-working-codex` (`c9a8a46`, RS-rating default filter): **skip** —
+        superseded; current `main` already carries a more evolved version (five
+        `rs_rating*` filter variants in `filters.ts`, all `rs_rating*` columns in
+        `snapshot.server.ts`). A cherry-pick would conflict with three months of drift.
+      - `upstream/origin/fix/constituents-access` (`ce11076`, public constituents page):
+        **deferred, user to decide** — `main` still gates `constituents.functions.ts`
+        behind `requireApprovedAuth`, so it was never absorbed; but the commit's 76-line
+        `snapshot.server.ts` change has diverged, so only the ~6-line core (swap
+        user-auth for `supabaseAdmin`) could be re-applied by hand if wanted.
+- [x] One scheduler only — **CHOSEN: pg_cron (19-Sep-2026).** The migrations already
+      install the ~19 jobs, so no extra account or dashboard setup; cron-job.org will
+      NOT be scheduled for these jobs (double-fire trap). It may still be used as a
+      manual "run now" console for backfills, with no overlapping schedules.
 - [ ] Cloudflare Workers vs Vercel (the 10 ms CPU limit risks the Bhavcopy ingestion).
-- [ ] Cherry-pick either orphaned branch? (`fix/constituents-access`, `main-working-codex`)
 
 ### Phase 3+ — one item must not be missed
 
@@ -198,10 +210,12 @@ migration commit is a reviewable delta against it.
 
 ### Still open
 
-1. **One scheduler only** — `pg_cron` XOR cron-job.org. Running both double-fires every job.
+1. ~~One scheduler only~~ — **CHOSEN: pg_cron** (19-Sep-2026; see PENDING section).
 2. **Cloudflare Workers vs Vercel** — the guide warns Bhavcopy ingestion may exceed
    Cloudflare's 10 ms CPU limit.
-3. Whether to cherry-pick either orphaned branch.
+3. ~~Cherry-pick either orphaned branch~~ — deferred/declined (see PENDING section);
+   only `ce11076`'s core idea (public constituents page) remains a possible manual
+   re-apply if wanted later.
 
 ## Phase 1 — de-Lovable the build ✅ DONE & VERIFIED
 
