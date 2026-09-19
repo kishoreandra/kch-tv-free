@@ -26,9 +26,10 @@ working tree clean.
 migrations bake `https://kch-tv.lovable.app` into ~19 pg_cron jobs; rewrite the host
 **before** `supabase db push`.
 
-**Two decisions still open** (detailed in the Phase 5 notes below): whether to remove
-the now-unused `@cloudflare/vite-plugin` dependency, and how to reconcile
-`wrangler.jsonc`, whose `main` the build overrides and ignores.
+**Two former decision items are now resolved** (commit `a464feb`): the unused
+`@cloudflare/vite-plugin` dependency was removed, and `wrangler.jsonc`'s stale
+`"main"` was dropped — the build's "Wrangler config main is overridden" warning is
+gone. See the Phase 1 notes below for details.
 
 ### How to resume in a new session
 
@@ -87,8 +88,17 @@ Only remaining `lovable` match in `src/` is the NSE ticker `LOVABLE` in
 
 ### Decisions needed before Phase 3 / 5
 
-- [ ] Remove the unused `@cloudflare/vite-plugin` dependency?
-- [ ] Reconcile `wrangler.jsonc` — its `main` is overridden and ignored by the build.
+- [x] Remove the unused `@cloudflare/vite-plugin` dependency — **DONE (`a464feb`)**.
+      Verified: no source file imports it (only `package.json` / lockfile referenced it);
+      `vite.config.ts` never used it; `npm install` removed it from node_modules; build
+      output identical and green.
+- [x] Reconcile `wrangler.jsonc` — **DONE (`a464feb`)**. Nitro reads the root config's
+      `name`, `compatibility_date` and `compatibility_flags` but always overrides `main`
+      with its own entry (`index.mjs` in `.output/server/wrangler.json`), which is why the
+      build warned "Wrangler config main is overridden and will be ignored". Removed the
+      stale `"main": "src/server.ts"` field; the warning is gone and the emitted config
+      is unchanged. Deploy with `npx wrangler deploy` from `.output/server/` (or let the
+      deploy step pick the generated config).
 - [ ] One scheduler only: `pg_cron` XOR cron-job.org (running both double-fires every job).
 - [ ] Cloudflare Workers vs Vercel (the 10 ms CPU limit risks the Bhavcopy ingestion).
 - [ ] Cherry-pick either orphaned branch? (`fix/constituents-access`, `main-working-codex`)
@@ -264,15 +274,16 @@ artifact, **not** a config artifact: it happened on the baseline build before
 Expect `routeTree.gen.ts` to show as modified after any build; it is generated output.
 Only worry if the change is _semantic_, not ordering.
 
-### Known leftover, not yet addressed
+### Known leftover — resolved (`a464feb`)
 
-`@cloudflare/vite-plugin` is still a direct dependency in `package.json` but the build
-does **not** use it — `nitro` emits `.output/server/wrangler.json` itself. Candidate for
-removal; verify before deleting.
+`@cloudflare/vite-plugin` was a direct dependency the build never used — `nitro`
+emits `.output/server/wrangler.json` itself. It has been removed from `package.json`
+(verified: no source imports, build output identical).
 
-The build warns: `[cloudflare] Wrangler config main is overridden and will be ignored`
-— i.e. `wrangler.jsonc`'s `"main": "src/server.ts"` is **not** what gets deployed.
-Reconcile this before Phase 5.
+The build's `[cloudflare] Wrangler config main is overridden and will be ignored`
+warning is also gone: the stale `"main": "src/server.ts"` in `wrangler.jsonc` was
+removed. Nitro reads the root config's `name` / `compatibility_date` /
+`compatibility_flags` and overrides `main` with its own `index.mjs`.
 
 ## Phase 2 — de-Lovable the app ✅ DONE (see the PENDING section above for details)
 
