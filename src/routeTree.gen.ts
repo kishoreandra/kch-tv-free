@@ -9,77 +9,37 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ViewerRouteImport } from './routes/viewer'
-import { Route as ScreenersRouteImport } from './routes/screeners'
-import { Route as ReviewRouteImport } from './routes/review'
-import { Route as PriceAlertsRouteImport } from './routes/price-alerts'
-import { Route as PositionAnalyzerRouteImport } from './routes/position-analyzer'
-import { Route as MarketsRouteImport } from './routes/markets'
-import { Route as MarketSaRouteImport } from './routes/market-sa'
-import { Route as JournalRouteImport } from './routes/journal'
-import { Route as BreadthRouteImport } from './routes/breadth'
-import { Route as BandAlertsRouteImport } from './routes/band-alerts'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BandAlertsRouteImport } from './routes/band-alerts'
+import { Route as BreadthRouteImport } from './routes/breadth'
+import { Route as JournalRouteImport } from './routes/journal'
+import { Route as MarketSaRouteImport } from './routes/market-sa'
+import { Route as MarketsRouteImport } from './routes/markets'
+import { Route as PositionAnalyzerRouteImport } from './routes/position-analyzer'
+import { Route as PriceAlertsRouteImport } from './routes/price-alerts'
+import { Route as ReviewRouteImport } from './routes/review'
+import { Route as ScreenersRouteImport } from './routes/screeners'
+import { Route as ViewerRouteImport } from './routes/viewer'
 import { Route as AdminScannersRouteImport } from './routes/admin.scanners'
 import { Route as MarketsConstituentsSymbolRouteImport } from './routes/markets_.constituents.$symbol'
-import { Route as ApiPublicCronSnapshotBreadthRouteImport } from './routes/api/public/cron/snapshot-breadth'
-import { Route as ApiPublicCronRefreshVolMaxesRouteImport } from './routes/api/public/cron/refresh-vol-maxes'
-import { Route as ApiPublicCronRefreshSnapshotRouteImport } from './routes/api/public/cron/refresh-snapshot'
-import { Route as ApiPublicCronRefreshPriceBandsRouteImport } from './routes/api/public/cron/refresh-price-bands'
-import { Route as ApiPublicCronIngestIndexCloseRouteImport } from './routes/api/public/cron/ingest-index-close'
-import { Route as ApiPublicCronIngestDealsRouteImport } from './routes/api/public/cron/ingest-deals'
-import { Route as ApiPublicCronIngestDailyRouteImport } from './routes/api/public/cron/ingest-daily'
-import { Route as ApiPublicCronIngestBhavcopyRouteImport } from './routes/api/public/cron/ingest-bhavcopy'
-import { Route as ApiPublicCronEvaluateAlertsRouteImport } from './routes/api/public/cron/evaluate-alerts'
-import { Route as ApiPublicCronDeliverRemindersRouteImport } from './routes/api/public/cron/deliver-reminders'
-import { Route as ApiPublicCronCleanupBandChangesRouteImport } from './routes/api/public/cron/cleanup-band-changes'
-import { Route as ApiPublicCronBackfillPricesRouteImport } from './routes/api/public/cron/backfill-prices'
-import { Route as ApiPublicCronBackfillIndexCloseRouteImport } from './routes/api/public/cron/backfill-index-close'
 import { Route as ApiPublicCronBackfillBhavcopyRouteImport } from './routes/api/public/cron/backfill-bhavcopy'
+import { Route as ApiPublicCronBackfillIndexCloseRouteImport } from './routes/api/public/cron/backfill-index-close'
+import { Route as ApiPublicCronBackfillPricesRouteImport } from './routes/api/public/cron/backfill-prices'
+import { Route as ApiPublicCronCleanupBandChangesRouteImport } from './routes/api/public/cron/cleanup-band-changes'
+import { Route as ApiPublicCronDeliverRemindersRouteImport } from './routes/api/public/cron/deliver-reminders'
+import { Route as ApiPublicCronEvaluateAlertsRouteImport } from './routes/api/public/cron/evaluate-alerts'
+import { Route as ApiPublicCronIngestBhavcopyRouteImport } from './routes/api/public/cron/ingest-bhavcopy'
+import { Route as ApiPublicCronIngestDailyRouteImport } from './routes/api/public/cron/ingest-daily'
+import { Route as ApiPublicCronIngestDealsRouteImport } from './routes/api/public/cron/ingest-deals'
+import { Route as ApiPublicCronIngestIndexCloseRouteImport } from './routes/api/public/cron/ingest-index-close'
+import { Route as ApiPublicCronRefreshPriceBandsRouteImport } from './routes/api/public/cron/refresh-price-bands'
+import { Route as ApiPublicCronRefreshSnapshotRouteImport } from './routes/api/public/cron/refresh-snapshot'
+import { Route as ApiPublicCronRefreshVolMaxesRouteImport } from './routes/api/public/cron/refresh-vol-maxes'
+import { Route as ApiPublicCronSnapshotBreadthRouteImport } from './routes/api/public/cron/snapshot-breadth'
 
-const ViewerRoute = ViewerRouteImport.update({
-  id: '/viewer',
-  path: '/viewer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ScreenersRoute = ScreenersRouteImport.update({
-  id: '/screeners',
-  path: '/screeners',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReviewRoute = ReviewRouteImport.update({
-  id: '/review',
-  path: '/review',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PriceAlertsRoute = PriceAlertsRouteImport.update({
-  id: '/price-alerts',
-  path: '/price-alerts',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PositionAnalyzerRoute = PositionAnalyzerRouteImport.update({
-  id: '/position-analyzer',
-  path: '/position-analyzer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MarketsRoute = MarketsRouteImport.update({
-  id: '/markets',
-  path: '/markets',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MarketSaRoute = MarketSaRouteImport.update({
-  id: '/market-sa',
-  path: '/market-sa',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JournalRoute = JournalRouteImport.update({
-  id: '/journal',
-  path: '/journal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BreadthRoute = BreadthRouteImport.update({
-  id: '/breadth',
-  path: '/breadth',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BandAlertsRoute = BandAlertsRouteImport.update({
@@ -87,9 +47,49 @@ const BandAlertsRoute = BandAlertsRouteImport.update({
   path: '/band-alerts',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const BreadthRoute = BreadthRouteImport.update({
+  id: '/breadth',
+  path: '/breadth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JournalRoute = JournalRouteImport.update({
+  id: '/journal',
+  path: '/journal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketSaRoute = MarketSaRouteImport.update({
+  id: '/market-sa',
+  path: '/market-sa',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketsRoute = MarketsRouteImport.update({
+  id: '/markets',
+  path: '/markets',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PositionAnalyzerRoute = PositionAnalyzerRouteImport.update({
+  id: '/position-analyzer',
+  path: '/position-analyzer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PriceAlertsRoute = PriceAlertsRouteImport.update({
+  id: '/price-alerts',
+  path: '/price-alerts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewRoute = ReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScreenersRoute = ScreenersRouteImport.update({
+  id: '/screeners',
+  path: '/screeners',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ViewerRoute = ViewerRouteImport.update({
+  id: '/viewer',
+  path: '/viewer',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminScannersRoute = AdminScannersRouteImport.update({
@@ -103,76 +103,10 @@ const MarketsConstituentsSymbolRoute =
     path: '/markets/constituents/$symbol',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicCronSnapshotBreadthRoute =
-  ApiPublicCronSnapshotBreadthRouteImport.update({
-    id: '/api/public/cron/snapshot-breadth',
-    path: '/api/public/cron/snapshot-breadth',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronRefreshVolMaxesRoute =
-  ApiPublicCronRefreshVolMaxesRouteImport.update({
-    id: '/api/public/cron/refresh-vol-maxes',
-    path: '/api/public/cron/refresh-vol-maxes',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronRefreshSnapshotRoute =
-  ApiPublicCronRefreshSnapshotRouteImport.update({
-    id: '/api/public/cron/refresh-snapshot',
-    path: '/api/public/cron/refresh-snapshot',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronRefreshPriceBandsRoute =
-  ApiPublicCronRefreshPriceBandsRouteImport.update({
-    id: '/api/public/cron/refresh-price-bands',
-    path: '/api/public/cron/refresh-price-bands',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronIngestIndexCloseRoute =
-  ApiPublicCronIngestIndexCloseRouteImport.update({
-    id: '/api/public/cron/ingest-index-close',
-    path: '/api/public/cron/ingest-index-close',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronIngestDealsRoute =
-  ApiPublicCronIngestDealsRouteImport.update({
-    id: '/api/public/cron/ingest-deals',
-    path: '/api/public/cron/ingest-deals',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronIngestDailyRoute =
-  ApiPublicCronIngestDailyRouteImport.update({
-    id: '/api/public/cron/ingest-daily',
-    path: '/api/public/cron/ingest-daily',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronIngestBhavcopyRoute =
-  ApiPublicCronIngestBhavcopyRouteImport.update({
-    id: '/api/public/cron/ingest-bhavcopy',
-    path: '/api/public/cron/ingest-bhavcopy',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronEvaluateAlertsRoute =
-  ApiPublicCronEvaluateAlertsRouteImport.update({
-    id: '/api/public/cron/evaluate-alerts',
-    path: '/api/public/cron/evaluate-alerts',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronDeliverRemindersRoute =
-  ApiPublicCronDeliverRemindersRouteImport.update({
-    id: '/api/public/cron/deliver-reminders',
-    path: '/api/public/cron/deliver-reminders',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronCleanupBandChangesRoute =
-  ApiPublicCronCleanupBandChangesRouteImport.update({
-    id: '/api/public/cron/cleanup-band-changes',
-    path: '/api/public/cron/cleanup-band-changes',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicCronBackfillPricesRoute =
-  ApiPublicCronBackfillPricesRouteImport.update({
-    id: '/api/public/cron/backfill-prices',
-    path: '/api/public/cron/backfill-prices',
+const ApiPublicCronBackfillBhavcopyRoute =
+  ApiPublicCronBackfillBhavcopyRouteImport.update({
+    id: '/api/public/cron/backfill-bhavcopy',
+    path: '/api/public/cron/backfill-bhavcopy',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicCronBackfillIndexCloseRoute =
@@ -181,10 +115,76 @@ const ApiPublicCronBackfillIndexCloseRoute =
     path: '/api/public/cron/backfill-index-close',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicCronBackfillBhavcopyRoute =
-  ApiPublicCronBackfillBhavcopyRouteImport.update({
-    id: '/api/public/cron/backfill-bhavcopy',
-    path: '/api/public/cron/backfill-bhavcopy',
+const ApiPublicCronBackfillPricesRoute =
+  ApiPublicCronBackfillPricesRouteImport.update({
+    id: '/api/public/cron/backfill-prices',
+    path: '/api/public/cron/backfill-prices',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronCleanupBandChangesRoute =
+  ApiPublicCronCleanupBandChangesRouteImport.update({
+    id: '/api/public/cron/cleanup-band-changes',
+    path: '/api/public/cron/cleanup-band-changes',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronDeliverRemindersRoute =
+  ApiPublicCronDeliverRemindersRouteImport.update({
+    id: '/api/public/cron/deliver-reminders',
+    path: '/api/public/cron/deliver-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronEvaluateAlertsRoute =
+  ApiPublicCronEvaluateAlertsRouteImport.update({
+    id: '/api/public/cron/evaluate-alerts',
+    path: '/api/public/cron/evaluate-alerts',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronIngestBhavcopyRoute =
+  ApiPublicCronIngestBhavcopyRouteImport.update({
+    id: '/api/public/cron/ingest-bhavcopy',
+    path: '/api/public/cron/ingest-bhavcopy',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronIngestDailyRoute =
+  ApiPublicCronIngestDailyRouteImport.update({
+    id: '/api/public/cron/ingest-daily',
+    path: '/api/public/cron/ingest-daily',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronIngestDealsRoute =
+  ApiPublicCronIngestDealsRouteImport.update({
+    id: '/api/public/cron/ingest-deals',
+    path: '/api/public/cron/ingest-deals',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronIngestIndexCloseRoute =
+  ApiPublicCronIngestIndexCloseRouteImport.update({
+    id: '/api/public/cron/ingest-index-close',
+    path: '/api/public/cron/ingest-index-close',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronRefreshPriceBandsRoute =
+  ApiPublicCronRefreshPriceBandsRouteImport.update({
+    id: '/api/public/cron/refresh-price-bands',
+    path: '/api/public/cron/refresh-price-bands',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronRefreshSnapshotRoute =
+  ApiPublicCronRefreshSnapshotRouteImport.update({
+    id: '/api/public/cron/refresh-snapshot',
+    path: '/api/public/cron/refresh-snapshot',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronRefreshVolMaxesRoute =
+  ApiPublicCronRefreshVolMaxesRouteImport.update({
+    id: '/api/public/cron/refresh-vol-maxes',
+    path: '/api/public/cron/refresh-vol-maxes',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicCronSnapshotBreadthRoute =
+  ApiPublicCronSnapshotBreadthRouteImport.update({
+    id: '/api/public/cron/snapshot-breadth',
+    path: '/api/public/cron/snapshot-breadth',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -398,67 +398,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/viewer': {
-      id: '/viewer'
-      path: '/viewer'
-      fullPath: '/viewer'
-      preLoaderRoute: typeof ViewerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/screeners': {
-      id: '/screeners'
-      path: '/screeners'
-      fullPath: '/screeners'
-      preLoaderRoute: typeof ScreenersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/review': {
-      id: '/review'
-      path: '/review'
-      fullPath: '/review'
-      preLoaderRoute: typeof ReviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/price-alerts': {
-      id: '/price-alerts'
-      path: '/price-alerts'
-      fullPath: '/price-alerts'
-      preLoaderRoute: typeof PriceAlertsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/position-analyzer': {
-      id: '/position-analyzer'
-      path: '/position-analyzer'
-      fullPath: '/position-analyzer'
-      preLoaderRoute: typeof PositionAnalyzerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/markets': {
-      id: '/markets'
-      path: '/markets'
-      fullPath: '/markets'
-      preLoaderRoute: typeof MarketsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/market-sa': {
-      id: '/market-sa'
-      path: '/market-sa'
-      fullPath: '/market-sa'
-      preLoaderRoute: typeof MarketSaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/journal': {
-      id: '/journal'
-      path: '/journal'
-      fullPath: '/journal'
-      preLoaderRoute: typeof JournalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/breadth': {
-      id: '/breadth'
-      path: '/breadth'
-      fullPath: '/breadth'
-      preLoaderRoute: typeof BreadthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/band-alerts': {
@@ -468,11 +412,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BandAlertsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/breadth': {
+      id: '/breadth'
+      path: '/breadth'
+      fullPath: '/breadth'
+      preLoaderRoute: typeof BreadthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/journal': {
+      id: '/journal'
+      path: '/journal'
+      fullPath: '/journal'
+      preLoaderRoute: typeof JournalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/market-sa': {
+      id: '/market-sa'
+      path: '/market-sa'
+      fullPath: '/market-sa'
+      preLoaderRoute: typeof MarketSaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/markets': {
+      id: '/markets'
+      path: '/markets'
+      fullPath: '/markets'
+      preLoaderRoute: typeof MarketsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/position-analyzer': {
+      id: '/position-analyzer'
+      path: '/position-analyzer'
+      fullPath: '/position-analyzer'
+      preLoaderRoute: typeof PositionAnalyzerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/price-alerts': {
+      id: '/price-alerts'
+      path: '/price-alerts'
+      fullPath: '/price-alerts'
+      preLoaderRoute: typeof PriceAlertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/review': {
+      id: '/review'
+      path: '/review'
+      fullPath: '/review'
+      preLoaderRoute: typeof ReviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/screeners': {
+      id: '/screeners'
+      path: '/screeners'
+      fullPath: '/screeners'
+      preLoaderRoute: typeof ScreenersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/viewer': {
+      id: '/viewer'
+      path: '/viewer'
+      fullPath: '/viewer'
+      preLoaderRoute: typeof ViewerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/scanners': {
@@ -489,88 +489,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MarketsConstituentsSymbolRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/cron/snapshot-breadth': {
-      id: '/api/public/cron/snapshot-breadth'
-      path: '/api/public/cron/snapshot-breadth'
-      fullPath: '/api/public/cron/snapshot-breadth'
-      preLoaderRoute: typeof ApiPublicCronSnapshotBreadthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/refresh-vol-maxes': {
-      id: '/api/public/cron/refresh-vol-maxes'
-      path: '/api/public/cron/refresh-vol-maxes'
-      fullPath: '/api/public/cron/refresh-vol-maxes'
-      preLoaderRoute: typeof ApiPublicCronRefreshVolMaxesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/refresh-snapshot': {
-      id: '/api/public/cron/refresh-snapshot'
-      path: '/api/public/cron/refresh-snapshot'
-      fullPath: '/api/public/cron/refresh-snapshot'
-      preLoaderRoute: typeof ApiPublicCronRefreshSnapshotRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/refresh-price-bands': {
-      id: '/api/public/cron/refresh-price-bands'
-      path: '/api/public/cron/refresh-price-bands'
-      fullPath: '/api/public/cron/refresh-price-bands'
-      preLoaderRoute: typeof ApiPublicCronRefreshPriceBandsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/ingest-index-close': {
-      id: '/api/public/cron/ingest-index-close'
-      path: '/api/public/cron/ingest-index-close'
-      fullPath: '/api/public/cron/ingest-index-close'
-      preLoaderRoute: typeof ApiPublicCronIngestIndexCloseRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/ingest-deals': {
-      id: '/api/public/cron/ingest-deals'
-      path: '/api/public/cron/ingest-deals'
-      fullPath: '/api/public/cron/ingest-deals'
-      preLoaderRoute: typeof ApiPublicCronIngestDealsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/ingest-daily': {
-      id: '/api/public/cron/ingest-daily'
-      path: '/api/public/cron/ingest-daily'
-      fullPath: '/api/public/cron/ingest-daily'
-      preLoaderRoute: typeof ApiPublicCronIngestDailyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/ingest-bhavcopy': {
-      id: '/api/public/cron/ingest-bhavcopy'
-      path: '/api/public/cron/ingest-bhavcopy'
-      fullPath: '/api/public/cron/ingest-bhavcopy'
-      preLoaderRoute: typeof ApiPublicCronIngestBhavcopyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/evaluate-alerts': {
-      id: '/api/public/cron/evaluate-alerts'
-      path: '/api/public/cron/evaluate-alerts'
-      fullPath: '/api/public/cron/evaluate-alerts'
-      preLoaderRoute: typeof ApiPublicCronEvaluateAlertsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/deliver-reminders': {
-      id: '/api/public/cron/deliver-reminders'
-      path: '/api/public/cron/deliver-reminders'
-      fullPath: '/api/public/cron/deliver-reminders'
-      preLoaderRoute: typeof ApiPublicCronDeliverRemindersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/cleanup-band-changes': {
-      id: '/api/public/cron/cleanup-band-changes'
-      path: '/api/public/cron/cleanup-band-changes'
-      fullPath: '/api/public/cron/cleanup-band-changes'
-      preLoaderRoute: typeof ApiPublicCronCleanupBandChangesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/cron/backfill-prices': {
-      id: '/api/public/cron/backfill-prices'
-      path: '/api/public/cron/backfill-prices'
-      fullPath: '/api/public/cron/backfill-prices'
-      preLoaderRoute: typeof ApiPublicCronBackfillPricesRouteImport
+    '/api/public/cron/backfill-bhavcopy': {
+      id: '/api/public/cron/backfill-bhavcopy'
+      path: '/api/public/cron/backfill-bhavcopy'
+      fullPath: '/api/public/cron/backfill-bhavcopy'
+      preLoaderRoute: typeof ApiPublicCronBackfillBhavcopyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/cron/backfill-index-close': {
@@ -580,11 +503,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicCronBackfillIndexCloseRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/cron/backfill-bhavcopy': {
-      id: '/api/public/cron/backfill-bhavcopy'
-      path: '/api/public/cron/backfill-bhavcopy'
-      fullPath: '/api/public/cron/backfill-bhavcopy'
-      preLoaderRoute: typeof ApiPublicCronBackfillBhavcopyRouteImport
+    '/api/public/cron/backfill-prices': {
+      id: '/api/public/cron/backfill-prices'
+      path: '/api/public/cron/backfill-prices'
+      fullPath: '/api/public/cron/backfill-prices'
+      preLoaderRoute: typeof ApiPublicCronBackfillPricesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/cleanup-band-changes': {
+      id: '/api/public/cron/cleanup-band-changes'
+      path: '/api/public/cron/cleanup-band-changes'
+      fullPath: '/api/public/cron/cleanup-band-changes'
+      preLoaderRoute: typeof ApiPublicCronCleanupBandChangesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/deliver-reminders': {
+      id: '/api/public/cron/deliver-reminders'
+      path: '/api/public/cron/deliver-reminders'
+      fullPath: '/api/public/cron/deliver-reminders'
+      preLoaderRoute: typeof ApiPublicCronDeliverRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/evaluate-alerts': {
+      id: '/api/public/cron/evaluate-alerts'
+      path: '/api/public/cron/evaluate-alerts'
+      fullPath: '/api/public/cron/evaluate-alerts'
+      preLoaderRoute: typeof ApiPublicCronEvaluateAlertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/ingest-bhavcopy': {
+      id: '/api/public/cron/ingest-bhavcopy'
+      path: '/api/public/cron/ingest-bhavcopy'
+      fullPath: '/api/public/cron/ingest-bhavcopy'
+      preLoaderRoute: typeof ApiPublicCronIngestBhavcopyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/ingest-daily': {
+      id: '/api/public/cron/ingest-daily'
+      path: '/api/public/cron/ingest-daily'
+      fullPath: '/api/public/cron/ingest-daily'
+      preLoaderRoute: typeof ApiPublicCronIngestDailyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/ingest-deals': {
+      id: '/api/public/cron/ingest-deals'
+      path: '/api/public/cron/ingest-deals'
+      fullPath: '/api/public/cron/ingest-deals'
+      preLoaderRoute: typeof ApiPublicCronIngestDealsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/ingest-index-close': {
+      id: '/api/public/cron/ingest-index-close'
+      path: '/api/public/cron/ingest-index-close'
+      fullPath: '/api/public/cron/ingest-index-close'
+      preLoaderRoute: typeof ApiPublicCronIngestIndexCloseRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/refresh-price-bands': {
+      id: '/api/public/cron/refresh-price-bands'
+      path: '/api/public/cron/refresh-price-bands'
+      fullPath: '/api/public/cron/refresh-price-bands'
+      preLoaderRoute: typeof ApiPublicCronRefreshPriceBandsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/refresh-snapshot': {
+      id: '/api/public/cron/refresh-snapshot'
+      path: '/api/public/cron/refresh-snapshot'
+      fullPath: '/api/public/cron/refresh-snapshot'
+      preLoaderRoute: typeof ApiPublicCronRefreshSnapshotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/refresh-vol-maxes': {
+      id: '/api/public/cron/refresh-vol-maxes'
+      path: '/api/public/cron/refresh-vol-maxes'
+      fullPath: '/api/public/cron/refresh-vol-maxes'
+      preLoaderRoute: typeof ApiPublicCronRefreshVolMaxesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cron/snapshot-breadth': {
+      id: '/api/public/cron/snapshot-breadth'
+      path: '/api/public/cron/snapshot-breadth'
+      fullPath: '/api/public/cron/snapshot-breadth'
+      preLoaderRoute: typeof ApiPublicCronSnapshotBreadthRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
