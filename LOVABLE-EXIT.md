@@ -17,6 +17,10 @@ Commits on `main` (this repo has no remote yet):
 | `c6166fe` | Baseline: import of `kch-tv@31aca3e`, `.env` untracked |
 | `7bde4ee` | `build:` Vite config rewritten standalone (byte-identical output) |
 | `207d237` | `chore(deps):` drop bun + Lovable build package |
+| `4b6b7b5` | `docs:` this file + `.github/copilot-instructions.md` |
+
+Run `git log --oneline` for the current tip. The last full build verification was green;
+working tree clean.
 
 **Next action:** Phase 2. Read the Phase 2 table first — `previewAuthStorage.ts` is
 **live code**, not dead code; `integrations/supabase/client.ts` imports
@@ -26,6 +30,66 @@ Supabase client.
 **Two decisions still open** (detailed in the Phase 5 notes below): whether to remove
 the now-unused `@cloudflare/vite-plugin` dependency, and how to reconcile
 `wrangler.jsonc`, whose `main` the build overrides and ignores.
+
+### How to resume in a new session
+
+1. Open this folder (`d:\kch-tv-free`) as the workspace.
+2. **Activate Node 22 first.** A fresh shell resolves to global Node 20.10.0 and the build
+   fails on `@tanstack/react-start`'s engine requirement:
+   ```powershell
+   $env:Path = "C:\Users\ADMIN\AppData\Roaming\fnm\node-versions\v22.23.2\installation;$env:Path"
+   ```
+3. Nothing to reinstall — `node_modules` is already present.
+4. Then just say: *"Read LOVABLE-EXIT.md and continue with the pending list."*
+
+## PENDING — consolidated
+
+Everything outstanding in one list. Phase detail is further down.
+
+### Hygiene — do these first
+
+- [ ] **Create the GitHub remote and push.** This repo has **no remote and no backup**;
+      the four commits exist only as this folder on disk. The gate you set (build passes
+      locally) is now met. Pushing needs auth fixed first: the SSH key on this machine is
+      not authorized on `kishoreandra`, so use HTTPS + PAT or `gh auth login`.
+- [ ] **Rewrite `MIGRATION.md`.** It is now actively misleading — every `bun install` /
+      `bun run build` / `bunx wrangler` command is wrong (bun is not installed here), its
+      cron table lists 8 endpoints when 14 exist, and it claims all endpoints use
+      `x-cron-secret`, which is false.
+
+### Phase 2 — de-Lovable the app (next)
+
+- [ ] `AuthButton.tsx` — drop the `VITE_STANDALONE_AUTH` branch (a **build-time** var, so
+      setting it at runtime does nothing) and the `lovable.auth.signInWithOAuth` call;
+      always use `supabase.auth.signInWithOAuth`.
+- [ ] `integrations/supabase/previewAuthStorage.ts` — **live code**. Replace
+      `brokeredPreviewStorage` in `client.ts:4` with plain `localStorage`. Do **not** just
+      delete the file; that breaks the browser Supabase client.
+- [ ] Delete `integrations/lovable/` and the `@lovable.dev/cloud-auth-js` dependency.
+- [ ] Delete `.lovable/` (still tracked: `plan.md`, `project.json`).
+- [ ] Fix the 4 hardcoded `kch-tv.lovable.app` URLs: `admin/index-backfill.functions.ts:24`,
+      `admin/refresh-price-bands.functions.ts:12`, `breadth/market-sa.functions.ts:95`,
+      `telegram.server.ts:40`.
+- [ ] Rename env `LOVABLE_PROJECT_URL` → `APP_URL` (`breadth.functions.ts:49`) and update
+      `.env.example` to match.
+- [ ] Repoint `og:image` / `twitter:image` off the Lovable R2 bucket (`routes/__root.tsx:86-87`).
+- [ ] Update the 3 User-Agent strings advertising lovable.dev: `ohlc.functions.ts:168`,
+      `history/yahoo-backfill.server.ts:31`, `screener/bundle.functions.ts:44`.
+- [ ] Remove the "Built with Lovable" badge (`routes/index.tsx:145-150`).
+
+### Decisions needed before Phase 3 / 5
+
+- [ ] Remove the unused `@cloudflare/vite-plugin` dependency?
+- [ ] Reconcile `wrangler.jsonc` — its `main` is overridden and ignored by the build.
+- [ ] One scheduler only: `pg_cron` XOR cron-job.org (running both double-fires every job).
+- [ ] Cloudflare Workers vs Vercel (the 10 ms CPU limit risks the Bhavcopy ingestion).
+- [ ] Cherry-pick either orphaned branch? (`fix/constituents-access`, `main-working-codex`)
+
+### Phase 3+ — one item must not be missed
+
+- [ ] Rewrite the `https://kch-tv.lovable.app` host inside `install_snapshot_cron_jobs`,
+      `install_breadth_cron_jobs` and `install_index_cron_jobs` **before** `supabase db push`,
+      otherwise ~19 pg_cron jobs are recreated pointing at the old host.
 
 ## Goal
 
@@ -200,31 +264,6 @@ removal; verify before deleting.
 The build warns: `[cloudflare] Wrangler config main is overridden and will be ignored`
 — i.e. `wrangler.jsonc`'s `"main": "src/server.ts"` is **not** what gets deployed.
 Reconcile this before Phase 5.
-
-### What `vite.config.ts` must reproduce
-
-The current file imports `defineConfig` from `@lovable.dev/vite-tanstack-config`. Its own
-comment says that package supplies:
-
-- `tanstackStart` — from `@tanstack/react-start/plugin/vite`
-- `viteReact` — `@vitejs/plugin-react`
-- `tailwindcss` — `@tailwindcss/vite`
-- `tsConfigPaths` — `vite-tsconfig-paths`
-- cloudflare (build-only) — `@cloudflare/vite-plugin`
-- `@` path alias, VITE_* env injection (Vite does this natively)
-- React/TanStack dedupe
-- error logger plugins, sandbox detection (port/host/strictPort)
-- `componentTagger` (dev-only) — **drop**: appears nowhere in `src/`
-
-**Must preserve** the existing option, which redirects the server entry to `src/server.ts`:
-
-```ts
-tanstackStart: { server: { entry: "server" } }
-```
-
-`componentTagger`, `@lovable.dev/vite-plugin-dev-server-bridge` and
-`@lovable.dev/vite-plugin-hmr-gate` appear **only** in lockfiles/config — never in `src/`.
-Dropping the package removes the whole tree.
 
 ## Phase 2 — de-Lovable the app (NOT STARTED)
 
