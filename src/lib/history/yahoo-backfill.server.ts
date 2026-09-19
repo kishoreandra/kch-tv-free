@@ -28,7 +28,7 @@ async function fetchYahooDaily(symbol: string, years: number) {
     `?interval=1d&range=${range}&includePrePost=false`;
   const res = await fetch(url, {
     headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; NSE-MultiView/1.0; +https://lovable.dev)",
+      "User-Agent": "Mozilla/5.0 (compatible; NSE-MultiView/1.0)",
       Accept: "application/json",
     },
     cache: "no-store",

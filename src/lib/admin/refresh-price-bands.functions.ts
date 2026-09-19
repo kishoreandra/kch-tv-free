@@ -9,7 +9,9 @@ export const refreshPriceBandsNow = createServerFn({ method: "POST" })
   .handler(async () => {
     const apiKey = process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? "";
     if (!apiKey) throw new Error("Backend publishable key is not configured");
-    const url = "https://kch-tv.lovable.app/api/public/cron/refresh-price-bands";
+    const base = process.env.APP_URL ?? "";
+    if (!base) throw new Error("APP_URL is not configured on the server");
+    const url = `${base}/api/public/cron/refresh-price-bands`;
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json", apikey: apiKey },

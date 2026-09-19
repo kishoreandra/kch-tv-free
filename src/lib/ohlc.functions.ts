@@ -165,7 +165,7 @@ async function fetchYahooChart(candidate: string, yInterval: string, range: stri
   const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encoded}?interval=${yInterval}&range=${range}&includePrePost=false&_=${cacheBuster()}`;
   const res = await fetch(url, {
     headers: {
-      "User-Agent": "Mozilla/5.0 (compatible; NSE-MultiView/1.0; +https://lovable.dev)",
+      "User-Agent": "Mozilla/5.0 (compatible; NSE-MultiView/1.0)",
       Accept: "application/json",
       "Cache-Control": "no-cache",
     },

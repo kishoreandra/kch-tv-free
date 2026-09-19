@@ -92,7 +92,9 @@ export const runBhavcopyIngestion = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const secret = process.env.CRON_SECRET ?? "";
     if (secret.length < 16) throw new Error("CRON_SECRET is not configured on the server");
-    const res = await fetch("https://kch-tv.lovable.app/api/public/cron/ingest-bhavcopy", {
+    const base = process.env.APP_URL ?? "";
+    if (!base) throw new Error("APP_URL is not configured on the server");
+    const res = await fetch(`${base}/api/public/cron/ingest-bhavcopy`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-cron-secret": secret },
       body: JSON.stringify({ days: data.days ?? 1, ...(data.date ? { date: data.date } : {}) }),

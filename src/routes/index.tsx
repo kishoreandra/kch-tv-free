@@ -139,17 +139,6 @@ function IndexGate() {
           <p className="flex items-center gap-1.5">
             Made with <span className="text-red-400">♥</span> in India
           </p>
-          <p>
-            Crafted on{" "}
-            <a
-              href="https://lovable.dev"
-              target="_blank"
-              rel="noreferrer"
-              className="underline-offset-4 transition-colors hover:text-white/70 hover:underline"
-            >
-              Lovable
-            </a>
-          </p>
         </div>
       </div>
     );

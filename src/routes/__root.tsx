@@ -83,8 +83,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       
       { name: "twitter:title", content: "NSE MultiView — Multi-Timeframe Charts, Screeners & Alerts" },
       { name: "twitter:description", content: "Trade View Companion provides multi-timeframe stock charting for Indian markets." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6b3da659-2b25-4b11-9899-99a5aa8aba54/id-preview-0583dec9--1bca8c96-9385-4aa8-ba55-e6532405bc4d.lovable.app-1778958347956.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/6b3da659-2b25-4b11-9899-99a5aa8aba54/id-preview-0583dec9--1bca8c96-9385-4aa8-ba55-e6532405bc4d.lovable.app-1778958347956.png" },
+      { property: "og:image", content: "/favicon.png" },
+      { name: "twitter:image", content: "/favicon.png" },
     ],
     links: [
       {

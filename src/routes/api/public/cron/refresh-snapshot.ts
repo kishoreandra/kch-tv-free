@@ -1,6 +1,6 @@
 // Public cron endpoint that refreshes a slice of the stock_snapshot table.
-// Called by pg_cron with an `apikey` header (Supabase anon key) — the
-// /api/public/* prefix bypasses Lovable's published-site auth gate, and
+// Called by pg_cron with an `apikey` header (Supabase anon key). The
+// /api/public/* prefix is served without the app's session auth gate, and
 // authentication is handled inside the handler by checking the apikey.
 //
 // Body: { offset?: number, limit?: number }

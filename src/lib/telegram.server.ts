@@ -37,7 +37,9 @@ export function escapeHtml(s: string): string {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-const SITE = "https://kch-tv.lovable.app";
+// Public base URL of this deployment, used to build links inside Telegram
+// messages. Set APP_URL in the host's environment.
+const SITE = process.env.APP_URL ?? "";
 
 /** `SYMBOL` linked to our chart view, with a small TradingView link beside it. */
 export function symbolLinks(ticker: string): string {

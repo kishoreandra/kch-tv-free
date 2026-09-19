@@ -46,7 +46,7 @@ export const snapshotBreadthNow = createServerFn({ method: "POST" })
   .handler(async () => {
     const apikey = process.env.SUPABASE_PUBLISHABLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? "";
     // The cron route runs the same logic; call it server-to-server.
-    const base = process.env.LOVABLE_PROJECT_URL || "";
+    const base = process.env.APP_URL || "";
     if (!base) {
       // Fallback: do the work inline by importing supabaseAdmin.
       const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

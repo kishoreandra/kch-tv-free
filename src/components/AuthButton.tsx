@@ -2,7 +2,6 @@ import { useState, type ReactNode } from "react";
 import { LogIn, LogOut, User as UserIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
@@ -69,29 +68,15 @@ export function AuthButton({ extraMenuItems }: { extraMenuItems?: ReactNode } = 
   const handleGoogle = async () => {
     setBusy(true);
     try {
-      // Standalone / self-hosted deployments (outside Lovable) sign in straight
-      // through Supabase Auth. Set VITE_STANDALONE_AUTH=true in the host's env.
-      if (import.meta.env.VITE_STANDALONE_AUTH === "true") {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: { redirectTo: window.location.origin },
-        });
-        if (error) {
-          toast.error(error.message || "Google sign-in failed");
-          setBusy(false);
-        }
-        return;
-      }
-
-      const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: { redirectTo: window.location.origin },
       });
-      if (result.error) {
-        toast.error(result.error.message || "Google sign-in failed");
+      if (error) {
+        toast.error(error.message || "Google sign-in failed");
         setBusy(false);
         return;
       }
-      if (result.redirected) return;
       setOpen(false);
       toast.success("Signed in");
     } catch (e) {

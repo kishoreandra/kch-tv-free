@@ -21,7 +21,9 @@ export const backfillIndexHistory = createServerFn({ method: "POST" })
     const from = data.from ?? "2017-01-01";
     const batchDays = Math.min(200, Math.max(1, data.batchDays ?? 60));
     const budgetMs = Math.min(120_000, Math.max(5_000, data.budgetMs ?? 45_000));
-    const url = "https://kch-tv.lovable.app/api/public/cron/backfill-index-close";
+    const base = process.env.APP_URL ?? "";
+    if (!base) throw new Error("APP_URL is not configured on the server");
+    const url = `${base}/api/public/cron/backfill-index-close`;
     const startedAt = Date.now();
 
     let sessions = 0;
