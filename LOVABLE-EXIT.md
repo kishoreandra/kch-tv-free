@@ -7,7 +7,7 @@ Living document. Update as phases complete. Started 19-Sep-2026.
 | Phase | State |
 | --- | --- |
 | 1. De-Lovable the **build** | ✅ **DONE & verified** |
-| 2. De-Lovable the **app** (auth broker, hardcoded URLs) | ⬜ **next** |
+| 2. De-Lovable the **app** (auth broker, hardcoded URLs) | ✅ **DONE & verified** |
 | 3-7. Supabase, data, deploy, schedules, verify | ⬜ not started |
 
 Commits on `main` (this repo has no remote yet):
@@ -22,10 +22,9 @@ Commits on `main` (this repo has no remote yet):
 Run `git log --oneline` for the current tip. The last full build verification was green;
 working tree clean.
 
-**Next action:** Phase 2. Read the Phase 2 table first — `previewAuthStorage.ts` is
-**live code**, not dead code; `integrations/supabase/client.ts` imports
-`brokeredPreviewStorage` from it, so deleting the file outright breaks the browser
-Supabase client.
+**Next action:** Phase 3 (new Supabase project). Read the Phase 3 note first — the
+migrations bake `https://kch-tv.lovable.app` into ~19 pg_cron jobs; rewrite the host
+**before** `supabase db push`.
 
 **Two decisions still open** (detailed in the Phase 5 notes below): whether to remove
 the now-unused `@cloudflare/vite-plugin` dependency, and how to reconcile
@@ -49,33 +48,42 @@ Everything outstanding in one list. Phase detail is further down.
 ### Hygiene — do these first
 
 - [ ] **Create the GitHub remote and push.** This repo has **no remote and no backup**;
-      the four commits exist only as this folder on disk. The gate you set (build passes
+      the commits exist only as this folder on disk. The gate you set (build passes
       locally) is now met. Pushing needs auth fixed first: the SSH key on this machine is
       not authorized on `kishoreandra`, so use HTTPS + PAT or `gh auth login`.
-- [ ] **Rewrite `MIGRATION.md`.** It is now actively misleading — every `bun install` /
-      `bun run build` / `bunx wrangler` command is wrong (bun is not installed here), its
-      cron table lists 8 endpoints when 14 exist, and it claims all endpoints use
-      `x-cron-secret`, which is false.
+- [x] **Rewrite `MIGRATION.md`.** Done: npm everywhere (no bun), all 14 cron endpoints
+      listed with the correct per-endpoint guard table, `APP_URL` documented, and the
+      Phase 3 pg_cron host-rewrite warning added.
 
-### Phase 2 — de-Lovable the app (next)
+### Phase 2 — de-Lovable the app ✅ DONE & VERIFIED
 
-- [ ] `AuthButton.tsx` — drop the `VITE_STANDALONE_AUTH` branch (a **build-time** var, so
-      setting it at runtime does nothing) and the `lovable.auth.signInWithOAuth` call;
-      always use `supabase.auth.signInWithOAuth`.
-- [ ] `integrations/supabase/previewAuthStorage.ts` — **live code**. Replace
-      `brokeredPreviewStorage` in `client.ts:4` with plain `localStorage`. Do **not** just
-      delete the file; that breaks the browser Supabase client.
-- [ ] Delete `integrations/lovable/` and the `@lovable.dev/cloud-auth-js` dependency.
-- [ ] Delete `.lovable/` (still tracked: `plan.md`, `project.json`).
-- [ ] Fix the 4 hardcoded `kch-tv.lovable.app` URLs: `admin/index-backfill.functions.ts:24`,
-      `admin/refresh-price-bands.functions.ts:12`, `breadth/market-sa.functions.ts:95`,
-      `telegram.server.ts:40`.
-- [ ] Rename env `LOVABLE_PROJECT_URL` → `APP_URL` (`breadth.functions.ts:49`) and update
-      `.env.example` to match.
-- [ ] Repoint `og:image` / `twitter:image` off the Lovable R2 bucket (`routes/__root.tsx:86-87`).
-- [ ] Update the 3 User-Agent strings advertising lovable.dev: `ohlc.functions.ts:168`,
-      `history/yahoo-backfill.server.ts:31`, `screener/bundle.functions.ts:44`.
-- [ ] Remove the "Built with Lovable" badge (`routes/index.tsx:145-150`).
+All items complete (build green after the changes):
+
+- [x] `AuthButton.tsx` — `VITE_STANDALONE_AUTH` branch and `lovable.auth.signInWithOAuth`
+      removed; always `supabase.auth.signInWithOAuth`.
+- [x] `integrations/supabase/previewAuthStorage.ts` — deleted; `client.ts` now passes
+      plain `localStorage` (SSR-safe: `undefined` when no `window`). The "Connect Supabase
+      in Lovable Cloud." error strings in `client.ts`, `client.server.ts` and
+      `auth-middleware.ts` were also cleaned.
+- [x] Deleted `integrations/lovable/` and the `@lovable.dev/cloud-auth-js` dependency
+      (`npm install` removed it; `node_modules/@lovable.dev/` is gone).
+- [x] Deleted `.lovable/` (`plan.md`, `project.json`).
+- [x] The 4 hardcoded `kch-tv.lovable.app` URLs now build from `process.env.APP_URL`
+      (with a clear error if unset): `admin/index-backfill.functions.ts`,
+      `admin/refresh-price-bands.functions.ts`, `breadth/market-sa.functions.ts`,
+      `telegram.server.ts` (`SITE`).
+- [x] Env `LOVABLE_PROJECT_URL` → `APP_URL` (`breadth.functions.ts`), `.env.example`
+      updated (also dropped `VITE_STANDALONE_AUTH`, fixed the `bun run build` mention).
+- [x] `og:image` / `twitter:image` repointed to `/favicon.png` (`routes/__root.tsx`).
+      A proper absolute og image should be added once the final domain is known.
+- [x] The 3 User-Agent strings no longer advertise lovable.dev:
+      `ohlc.functions.ts`, `history/yahoo-backfill.server.ts`, `screener/bundle.functions.ts`.
+- [x] "Crafted on Lovable" badge removed (`routes/index.tsx`).
+- [x] Stale comment referencing "Lovable's published-site auth gate" fixed
+      (`routes/api/public/cron/refresh-snapshot.ts`).
+
+Only remaining `lovable` match in `src/` is the NSE ticker `LOVABLE` in
+`src/data/nse-symbols.ts` — a stock name, not a dependency.
 
 ### Decisions needed before Phase 3 / 5
 
@@ -265,21 +273,7 @@ The build warns: `[cloudflare] Wrangler config main is overridden and will be ig
 — i.e. `wrangler.jsonc`'s `"main": "src/server.ts"` is **not** what gets deployed.
 Reconcile this before Phase 5.
 
-## Phase 2 — de-Lovable the app (NOT STARTED)
-
-| Item | Location |
-| --- | --- |
-| Auth broker | `integrations/lovable/index.ts`, `AuthButton.tsx:5,86` |
-| Preview auth bridge — **LIVE, not dead code** | `integrations/supabase/previewAuthStorage.ts`, imported as `brokeredPreviewStorage` by `client.ts:4` |
-| Hardcoded host | `admin/index-backfill.functions.ts:24`, `admin/refresh-price-bands.functions.ts:12`, `breadth/market-sa.functions.ts:95`, `telegram.server.ts:40` |
-| `og:image` on a Lovable R2 bucket | `routes/__root.tsx:86-87` |
-| User-Agent says lovable.dev | `ohlc.functions.ts:168`, `history/yahoo-backfill.server.ts:31`, `screener/bundle.functions.ts:44` |
-| Badge | `routes/index.tsx:145-150` |
-| Env var `LOVABLE_PROJECT_URL` | `breadth.functions.ts:49` → rename `APP_URL` |
-
-`AuthButton.tsx:74` gates Google sign-in behind `import.meta.env.VITE_STANDALONE_AUTH === "true"`.
-That is a **build-time** Vite variable — setting it at runtime does nothing. Once Lovable
-is gone, delete the flag and the branch entirely rather than relying on it.
+## Phase 2 — de-Lovable the app ✅ DONE (see the PENDING section above for details)
 
 ## Phase 3 — new Supabase project (NOT STARTED)
 
@@ -300,15 +294,10 @@ After import, re-run the 14-Sep phantom-candle cleanup (row-identity based).
 
 ## Phase 5-7 — deploy, schedules, verify
 
-See `MIGRATION.md`, but note its instructions are **wrong for this machine**:
-every `bun install` / `bun run build` / `bunx wrangler` must become `npm` / `npx`.
+See `MIGRATION.md` (rewritten 19-Sep-2026: npm commands, all 14 cron endpoints,
+correct per-endpoint guard table, one-scheduler warning).
 
-### Cron endpoints: 14 exist, `MIGRATION.md` lists 8
-
-Missing from the guide: `refresh-snapshot`, `refresh-vol-maxes`, `ingest-deals`,
-`backfill-prices`, `backfill-bhavcopy`, `backfill-index-close`.
-
-The guide's claim that all endpoints use `x-cron-secret` is **false**:
+### Cron endpoints: guard reference
 
 | Guard | Endpoints |
 | --- | --- |
